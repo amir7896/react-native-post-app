@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import axios from 'axios';
 
 type Post = {
@@ -8,65 +14,67 @@ type Post = {
   body: string;
 };
 
-type SectionProps = {
-  title: string;
-  children: React.ReactNode;
-};
-
-function Section({children, title}: SectionProps): React.ReactElement {
-  return (
-    <View style={styles.sectionContainer}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <Text style={styles.sectionDescription}>{children}</Text>
-    </View>
-  );
-}
-
 function Posts(): React.ReactElement {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [start, setStart] = useState(0);
+
+  const fetchPosts = async (start: number) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `https://jsonplaceholder.typicode.com/posts?_start=${start}&_limit=5`,
+      );
+      setPosts(prevPosts => [...prevPosts, ...response.data]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    axios
-      .get('https://jsonplaceholder.typicode.com/posts')
-      .then(response => {
-        setPosts(response.data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }, []);
+    fetchPosts(start);
+  }, [start]);
+
+  const loadMorePosts = () => {
+    if (!loading) {
+      setLoading(true);
+      setTimeout(() => {
+        setStart(prevStart => prevStart + 5);
+      }, 2000); // 2-second delay
+    }
+  };
+
+  const renderItem = ({item}: {item: Post}) => (
+    <View style={styles.card}>
+      <Text style={styles.postId}>ID: {item.id}</Text>
+      <Text style={styles.postTitle}>{item.title}</Text>
+      <Text style={styles.postBody}>{item.body}</Text>
+    </View>
+  );
+
+  const renderFooter = () => {
+    return loading ? <ActivityIndicator size="large" color="#0000ff" /> : null;
+  };
 
   return (
-    <View style={styles.container}>
-      <Section title="Posts">
-        {posts.map(post => (
-          <View key={post.id} style={styles.card}>
-            <Text style={styles.postId}>ID: {post.id}</Text>
-            <Text style={styles.postTitle}>{post.title}</Text>
-            <Text style={styles.postBody}>{post.body}</Text>
-          </View>
-        ))}
-      </Section>
-    </View>
+    <FlatList
+      data={posts}
+      renderItem={renderItem}
+      keyExtractor={item => item.id.toString()}
+      contentContainerStyle={styles.container}
+      onEndReached={loadMorePosts}
+      onEndReachedThreshold={0.5}
+      ListFooterComponent={renderFooter}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  sectionContainer: {
-    marginTop: 32,
     paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+    paddingVertical: 32,
   },
   card: {
     backgroundColor: 'white',
