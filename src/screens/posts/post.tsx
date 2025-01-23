@@ -1,11 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  ActivityIndicator,
-} from 'react-native';
+import {Text, View, FlatList, ActivityIndicator} from 'react-native';
+import styles from './style';
 import axios from 'axios';
 
 type Post = {
@@ -42,7 +37,7 @@ function Posts(): React.ReactElement {
       setLoading(true);
       setTimeout(() => {
         setStart(prevStart => prevStart + 5);
-      }, 2000); // 2-second delay
+      }, 3000);
     }
   };
 
@@ -54,8 +49,14 @@ function Posts(): React.ReactElement {
     </View>
   );
 
+  const renderHeader = () => (
+    <View>
+      <Text>Posts</Text>
+    </View>
+  );
+
   const renderFooter = () => {
-    return loading ? <ActivityIndicator size="large" color="#0000ff" /> : null;
+    return loading ? <ActivityIndicator size="large" color="#bdbdbd" /> : null;
   };
 
   return (
@@ -67,43 +68,9 @@ function Posts(): React.ReactElement {
       onEndReached={loadMorePosts}
       onEndReachedThreshold={0.5}
       ListFooterComponent={renderFooter}
+      ListHeaderComponent={renderHeader}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 24,
-    paddingVertical: 32,
-  },
-  card: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 16,
-    marginVertical: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  postId: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: '#333',
-  },
-  postTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginVertical: 4,
-  },
-  postBody: {
-    fontSize: 16,
-    color: '#666',
-  },
-});
 
 export default Posts;
