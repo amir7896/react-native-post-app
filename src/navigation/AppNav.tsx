@@ -2,6 +2,7 @@ import 'react-native-gesture-handler';
 import React, {useEffect, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
+import {NavigationContainer} from '@react-navigation/native'; // Import NavigationContainer
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from '../screens/home/home';
 import PostScreen from '../screens/posts/post';
@@ -21,6 +22,24 @@ type AuthStackParamList = {
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const Stack = createStackNavigator<AuthStackParamList>();
 
+function AuthStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function AppTab() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Posts" component={PostScreen} />
+    </Tab.Navigator>
+  );
+}
+
 export default function AppNav() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
@@ -38,18 +57,8 @@ export default function AppNav() {
   }
 
   return (
-    <>
-      {isLoggedIn ? (
-        <Tab.Navigator>
-          <Tab.Screen name="Home" component={HomeScreen} />
-          <Tab.Screen name="Posts" component={PostScreen} />
-        </Tab.Navigator>
-      ) : (
-        <Stack.Navigator>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-        </Stack.Navigator>
-      )}
-    </>
+    <NavigationContainer>
+      {isLoggedIn ? <AppTab /> : <AuthStack />}
+    </NavigationContainer>
   );
 }

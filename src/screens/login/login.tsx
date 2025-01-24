@@ -58,7 +58,8 @@ const LoginScreen: React.FC = () => {
         text1: 'Login Success',
         text2: 'Welcome back!',
       });
-      // You can navigate to another screen after successful login
+
+      // Reset navigation stack and navigate to the Tab navigator (Home)
       setTimeout(() => {
         navigation.navigate('Home');
       }, 2000);
@@ -116,14 +117,13 @@ const LoginScreen: React.FC = () => {
         <CustomButton text="Login" onPress={handleSubmit(onLoginPressed)} />
 
         <Text style={styles.text}>
-          Don't have an account?{' '}
+          Don't have an account?
           <Text style={styles.link} onPress={onSignUpPress}>
             Sign up
           </Text>
         </Text>
       </View>
 
-      {/* Toast component */}
       <Toast />
     </ScrollView>
   );
