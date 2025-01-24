@@ -1,6 +1,5 @@
 import 'react-native-gesture-handler';
 import React, {useEffect, useState} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,12 +34,11 @@ export default function AppNav() {
   }, []);
 
   if (isLoggedIn === null) {
-    // Optionally, add a loading indicator here while checking the token
     return null;
   }
 
   return (
-    <NavigationContainer>
+    <>
       {isLoggedIn ? (
         <Tab.Navigator>
           <Tab.Screen name="Home" component={HomeScreen} />
@@ -52,6 +50,6 @@ export default function AppNav() {
           <Stack.Screen name="Register" component={RegisterScreen} />
         </Stack.Navigator>
       )}
-    </NavigationContainer>
+    </>
   );
 }
