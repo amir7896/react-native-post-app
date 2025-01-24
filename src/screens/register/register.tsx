@@ -35,6 +35,11 @@ const RegisterScreen: React.FC = () => {
     (state: any) => state.auth,
   );
 
+  console.log('IsLoadding:', isLoading);
+  console.log('IsError:', isError);
+  console.log('isSuccess:', isSuccess);
+  console.log('Message:', message);
+
   const {
     control,
     handleSubmit,
@@ -44,6 +49,7 @@ const RegisterScreen: React.FC = () => {
   // Show error or success toast
   useEffect(() => {
     if (isError) {
+      // Show error toast
       Toast.show({
         type: 'error',
         position: 'bottom',
@@ -53,24 +59,26 @@ const RegisterScreen: React.FC = () => {
     }
 
     if (isSuccess) {
+      // Show success toast
       Toast.show({
         type: 'success',
         position: 'bottom',
         text1: 'Success',
         text2: 'Registration successful!',
       });
-      // 2 seconds delay
+
       setTimeout(() => {
         navigation.navigate('Login');
-      }, 2000);
+      }, 2000); // Delay to give the user time to see the success toast
     }
 
+    // Reset state
     dispatch(rest());
   }, [isError, isSuccess, message, navigation, dispatch]);
 
   // on Signup Button Pressed
   const onRegisterPressed = async (data: FormData) => {
-    dispatch(register(data));
+    dispatch(register(data)); // Trigger the register async action
   };
 
   const onSignInPress = () => {

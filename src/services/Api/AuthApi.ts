@@ -20,6 +20,7 @@ class AuthApi {
   // Register User
   async registerUser(body: Record<string, any>): Promise<User> {
     const response: AxiosResponse<any> = await Api.post(SIGNUP_USER, body);
+    console.log('Register response in api :', response.data);
     return response.data;
   }
 
@@ -27,10 +28,6 @@ class AuthApi {
   async signInUser(body: Record<string, any>): Promise<User | undefined> {
     try {
       const response: AxiosResponse<any> = await Api.post(SIGN_IN_USER, body);
-      console.log('Login response ===>', response.data);
-      console.log('Login response token ===>', response.data.token);
-      console.log('Login response user ===>', response.data.user);
-
       if (response.data) {
         await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
         await AsyncStorage.setItem(
