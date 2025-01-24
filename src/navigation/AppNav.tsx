@@ -1,13 +1,14 @@
 import 'react-native-gesture-handler';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native'; // Import NavigationContainer
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {NavigationContainer} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 import HomeScreen from '../screens/home/home';
 import PostScreen from '../screens/posts/post';
 import LoginScreen from '../screens/login/login';
 import RegisterScreen from '../screens/register/register';
+import {RootState} from '../app/store';
 
 type RootTabParamList = {
   Home: undefined;
@@ -41,19 +42,10 @@ function AppTab() {
 }
 
 export default function AppNav() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const {isLoggedIn, isLoading} = useSelector((state: RootState) => state.auth);
 
-  useEffect(() => {
-    const checkToken = async () => {
-      const token = await AsyncStorage.getItem('userToken');
-      setIsLoggedIn(!!token);
-    };
-
-    checkToken();
-  }, []);
-
-  if (isLoggedIn === null) {
-    return null;
+  if (isLoading) {
+    return null; //  Show a loading spinner here if necessary
   }
 
   return (
