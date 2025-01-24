@@ -37,7 +37,7 @@ function Posts(): React.ReactElement {
       setLoading(true);
       setTimeout(() => {
         setStart(prevStart => prevStart + 5);
-      }, 3000);
+      }, 2000);
     }
   };
 
