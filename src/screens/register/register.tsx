@@ -10,7 +10,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import CustomInput from '../../components/CustomInput/customInput';
 import CustomButton from '../../components/CustomButton/customButton';
-import {register, rest} from '../../features/User/UserSlice';
+import {register} from '../../features/User/UserSlice';
 import {AppDispatch} from '../../app/store';
 import {useForm, Control, FieldValues} from 'react-hook-form';
 import Toast from 'react-native-toast-message'; // Import the toast library
@@ -34,11 +34,6 @@ const RegisterScreen: React.FC = () => {
   const {isLoading, isError, isSuccess, message} = useSelector(
     (state: any) => state.auth,
   );
-
-  console.log('IsLoadding:', isLoading);
-  console.log('IsError:', isError);
-  console.log('isSuccess:', isSuccess);
-  console.log('Message:', message);
 
   const {
     control,
@@ -71,9 +66,6 @@ const RegisterScreen: React.FC = () => {
         navigation.navigate('Login');
       }, 2000); // Delay to give the user time to see the success toast
     }
-
-    // Reset state
-    dispatch(rest());
   }, [isError, isSuccess, message, navigation, dispatch]);
 
   // on Signup Button Pressed

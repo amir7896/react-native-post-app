@@ -1,3 +1,4 @@
+// Updated UserSlice.ts
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import AuthApi from '../../services/Api/AuthApi';
 
@@ -19,27 +20,35 @@ const initialState: AuthState = {
   message: '',
 };
 
-// Register User Slice
+// Register User
 export const register = createAsyncThunk(
   'auth/register',
   async (user: Record<string, any>, thunkAPI) => {
     try {
       const response = await AuthApi.registerUser(user);
-      return response; // Return the user data upon successful registration
+      if (!response.success) {
+        return thunkAPI.rejectWithValue(
+          response.message || 'Registration failed',
+        );
+      }
+      return response;
     } catch (error: any) {
       const message =
         error.response?.data?.message || error.message || error.toString();
-      return thunkAPI.rejectWithValue(message); // Handle errors
+      return thunkAPI.rejectWithValue(message);
     }
   },
 );
 
-// Login User Slice
+// Login User
 export const login = createAsyncThunk(
   'auth/login',
   async (user: Record<string, any>, thunkAPI) => {
     try {
       const response = await AuthApi.signInUser(user);
+      if (!response.success) {
+        return thunkAPI.rejectWithValue(response.message || 'Login failed');
+      }
       return response;
     } catch (error: any) {
       const message =
@@ -66,25 +75,20 @@ export const authSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      // Register Case
       .addCase(register.pending, state => {
         state.isLoading = true;
       })
       .addCase(register.fulfilled, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = action.payload.user; // Store the user object
-        state.isLoggedIn = true; // Set logged in state to true
+        state.user = action.payload.user;
+        state.message = action.payload.message || 'Registration successful';
       })
       .addCase(register.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-        state.user = null;
-        state.isLoggedIn = false;
       })
-
-      // Login Case
       .addCase(login.pending, state => {
         state.isLoading = true;
       })
@@ -93,13 +97,12 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.user = action.payload.user;
         state.isLoggedIn = true;
+        state.message = action.payload.message || 'Login successful';
       })
       .addCase(login.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-        state.user = null;
-        state.isLoggedIn = false;
       });
   },
 });

@@ -1,6 +1,6 @@
 import axios, {AxiosInstance} from 'axios';
 
-const Ip: string = '192.168.16.135';
+const Ip: string = '192.168.45.180';
 const Port: string = '4000';
 
 export const Api: AxiosInstance = axios.create({

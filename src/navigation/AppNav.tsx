@@ -44,8 +44,10 @@ function AppTab() {
 export default function AppNav() {
   const {isLoggedIn, isLoading} = useSelector((state: RootState) => state.auth);
 
+  console.log('AppNav State:', {isLoggedIn, isLoading}); // Debugging
+
   if (isLoading) {
-    return null; //  Show a loading spinner here if necessary
+    return null; // Show a loading spinner if needed
   }
 
   return (
