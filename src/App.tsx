@@ -1,20 +1,15 @@
-import React from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
-import Posts from './screens/posts/post';
+import * as React from 'react';
+import {Provider} from 'react-redux';
 
-function App(): React.ReactElement {
+import {store} from './app/store';
+
+import AppNav from './navigation/AppNav';
+export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <Posts />
-    </SafeAreaView>
+    <>
+      <Provider store={store}>
+        <AppNav />
+      </Provider>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F8F8',
-  },
-});
-
-export default App;
