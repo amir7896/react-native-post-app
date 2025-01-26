@@ -1,58 +1,52 @@
-import 'react-native-gesture-handler';
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useSelector} from 'react-redux';
+import {RootState} from '../app/store';
+
 import HomeScreen from '../screens/home/home';
 import PostScreen from '../screens/posts/post';
 import LoginScreen from '../screens/login/login';
 import RegisterScreen from '../screens/register/register';
-import {RootState} from '../app/store';
-
-type RootTabParamList = {
-  Home: undefined;
-  Posts: undefined;
-};
 
 type AuthStackParamList = {
   Login: undefined;
   Register: undefined;
 };
 
-const Tab = createBottomTabNavigator<RootTabParamList>();
-const Stack = createStackNavigator<AuthStackParamList>();
+type AppTabsParamList = {
+  Home: undefined;
+  Post: undefined;
+};
 
-function AuthStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
-    </Stack.Navigator>
-  );
-}
+const AuthStack = createNativeStackNavigator<AuthStackParamList>();
+const AppTabs = createBottomTabNavigator<AppTabsParamList>();
 
-function AppTab() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Posts" component={PostScreen} />
-    </Tab.Navigator>
-  );
-}
+// Main App Tabs
+const MainTabs = () => (
+  <AppTabs.Navigator>
+    <AppTabs.Screen name="Home" component={HomeScreen} />
+    <AppTabs.Screen name="Post" component={PostScreen} />
+  </AppTabs.Navigator>
+);
 
-export default function AppNav() {
-  const {isLoggedIn, isLoading} = useSelector((state: RootState) => state.auth);
-
-  console.log('AppNav State:', {isLoggedIn, isLoading}); // Debugging
-
-  if (isLoading) {
-    return null; // Show a loading spinner if needed
-  }
+// Main App
+const App = () => {
+  const {isLoggedIn} = useSelector((state: RootState) => state.auth);
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? <AppTab /> : <AuthStack />}
+      {isLoggedIn ? (
+        <MainTabs />
+      ) : (
+        <AuthStack.Navigator>
+          <AuthStack.Screen name="Login" component={LoginScreen} />
+          <AuthStack.Screen name="Register" component={RegisterScreen} />
+        </AuthStack.Navigator>
+      )}
     </NavigationContainer>
   );
-}
+};
+
+export default App;
