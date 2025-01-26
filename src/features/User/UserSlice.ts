@@ -1,10 +1,12 @@
 // Updated UserSlice.ts
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthApi from '../../services/Api/AuthApi';
 
 interface AuthState {
   user: Record<string, any> | null;
   isLoggedIn: boolean;
+  isCheckingAuth: boolean;
   isError: boolean;
   isSuccess: boolean;
   isLoading: boolean;
@@ -14,11 +16,37 @@ interface AuthState {
 const initialState: AuthState = {
   user: null,
   isLoggedIn: false,
+  isCheckingAuth: true,
   isError: false,
   isSuccess: false,
   isLoading: false,
   message: '',
 };
+
+// Thunk to check auth state
+export const checkAuthState = createAsyncThunk(
+  'auth/checkAuthState',
+  async (_, thunkAPI) => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const user = await AsyncStorage.getItem('user');
+
+      if (token && user) {
+        return {
+          user: JSON.parse(user),
+          isLoggedIn: true,
+        };
+      }
+      return {
+        user: null,
+        isLoggedIn: false,
+      };
+    } catch (error) {
+      console.error('Error checking auth state:', error);
+      return thunkAPI.rejectWithValue('Failed to check auth state');
+    }
+  },
+);
 
 // Register User
 export const register = createAsyncThunk(
@@ -75,6 +103,24 @@ export const authSlice = createSlice({
   },
   extraReducers: builder => {
     builder
+      // Check auth states case
+      .addCase(checkAuthState.pending, state => {
+        state.isCheckingAuth = true;
+      })
+      .addCase(
+        checkAuthState.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.user = action.payload.user;
+          state.isLoggedIn = action.payload.isLoggedIn;
+          state.isCheckingAuth = false;
+        },
+      )
+      .addCase(checkAuthState.rejected, state => {
+        state.user = null;
+        state.isLoggedIn = false;
+        state.isCheckingAuth = false;
+      })
+      // Register case
       .addCase(register.pending, state => {
         state.isLoading = true;
       })
@@ -89,6 +135,7 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
+      // Login case
       .addCase(login.pending, state => {
         state.isLoading = true;
       })
