@@ -35,7 +35,6 @@ class AuthApi {
         SIGNUP_USER,
         body,
       );
-      console.log('Register success response:', response.data);
       return response.data;
     } catch (error: any) {
       return {
@@ -53,7 +52,6 @@ class AuthApi {
         SIGN_IN_USER,
         body,
       );
-      console.log('Login success response:', response.data);
 
       if (response.data.success && response.data.user && response.data.token) {
         await AsyncStorage.setItem('user', JSON.stringify(response.data.user));

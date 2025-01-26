@@ -1,52 +1,44 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import {ActivityIndicator, View, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useSelector} from 'react-redux';
-import {RootState} from '../app/store';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState, AppDispatch} from '../app/store';
+import {checkAuthState} from '../features/User/UserSlice';
+import AuthTabs from './AuthTabs';
+import MainTabs from './MainTabs';
 
-import HomeScreen from '../screens/home/home';
-import PostScreen from '../screens/posts/post';
-import LoginScreen from '../screens/login/login';
-import RegisterScreen from '../screens/register/register';
+const AppNav = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {isLoggedIn, isCheckingAuth} = useSelector(
+    (state: RootState) => state.auth,
+  );
 
-type AuthStackParamList = {
-  Login: undefined;
-  Register: undefined;
-};
+  useEffect(() => {
+    dispatch(checkAuthState());
+  }, [dispatch]);
 
-type AppTabsParamList = {
-  Home: undefined;
-  Post: undefined;
-};
-
-const AuthStack = createNativeStackNavigator<AuthStackParamList>();
-const AppTabs = createBottomTabNavigator<AppTabsParamList>();
-
-// Main App Tabs
-const MainTabs = () => (
-  <AppTabs.Navigator>
-    <AppTabs.Screen name="Home" component={HomeScreen} />
-    <AppTabs.Screen name="Post" component={PostScreen} />
-  </AppTabs.Navigator>
-);
-
-// Main App
-const App = () => {
-  const {isLoggedIn} = useSelector((state: RootState) => state.auth);
+  if (isCheckingAuth) {
+    // Show a loading spinner while checking auth state
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? (
-        <MainTabs />
-      ) : (
-        <AuthStack.Navigator>
-          <AuthStack.Screen name="Login" component={LoginScreen} />
-          <AuthStack.Screen name="Register" component={RegisterScreen} />
-        </AuthStack.Navigator>
-      )}
+      {isLoggedIn ? <MainTabs /> : <AuthTabs />}
     </NavigationContainer>
   );
 };
 
-export default App;
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default AppNav;
