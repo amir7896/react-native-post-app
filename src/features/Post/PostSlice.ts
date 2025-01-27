@@ -42,7 +42,6 @@ export const fetchPosts = createAsyncThunk(
   async ({start, limit}: {start: number; limit: number}, thunkAPI) => {
     try {
       const response = await PostApi.getAllPosts(start, limit);
-      console.log('fetch post response in slice :', response);
 
       if (!response) {
         return thunkAPI.rejectWithValue(response || 'Fetching posts failed');
@@ -75,7 +74,7 @@ export const postSlice = createSlice({
       .addCase(fetchPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.posts = action.payload;
+        state.posts = [...state.posts, ...action.payload];
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.isLoading = false;
