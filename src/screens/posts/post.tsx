@@ -41,6 +41,11 @@ function Posts(): React.ReactElement {
     </View>
   );
 
+  const loadMorePosts = () => {
+    if (!isLoading) {
+      setStart(prevStart => prevStart + 5);
+    }
+  };
   const renderHeader = () => (
     <View>
       <Text>Posts</Text>
@@ -59,7 +64,7 @@ function Posts(): React.ReactElement {
       renderItem={renderItem}
       keyExtractor={item => item._id.toString()}
       contentContainerStyle={styles.container}
-      // onEndReached={loadMorePosts}
+      onEndReached={loadMorePosts}
       onEndReachedThreshold={0.5}
       ListFooterComponent={renderFooter}
       ListHeaderComponent={renderHeader}
