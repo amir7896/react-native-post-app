@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Text,
   View,
@@ -48,6 +48,9 @@ function Posts(): React.ReactElement {
   const [commentText, setCommentText] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Reference for ScrollView
+  const scrollViewRef = useRef<ScrollView>(null);
+
   useEffect(() => {
     dispatch(fetchPosts({start, limit: 5}));
   }, [start, dispatch]);
@@ -67,6 +70,10 @@ function Posts(): React.ReactElement {
       .unwrap()
       .then(() => {
         setCommentText('');
+        // Scroll to the bottom when a new comment is added
+        setTimeout(() => {
+          scrollViewRef.current?.scrollToEnd({animated: true});
+        }, 100); // Slight delay to ensure the comment is rendered
       })
       .catch(() => {
         setErrorMessage('Failed to add comment. Please try again.');
@@ -112,11 +119,14 @@ function Posts(): React.ReactElement {
               <View style={styles.modalTitleContainer}>
                 <Text style={styles.modalTitle}>Comments</Text>
               </View>
-              <ScrollView style={styles.scrollableCommentList}>
+              <ScrollView
+                style={styles.scrollableCommentList}
+                ref={scrollViewRef} // Attach the reference
+              >
                 {item.comments.map(comment => (
                   <View key={comment._id} style={styles.commentItem}>
                     <Text style={styles.commentUserName}>
-                      {comment.user?.userName || 'Unknown'}:
+                      User: {comment.user?.userName || 'Unknown'}
                     </Text>
                     <Text style={styles.commentContent}>{comment.content}</Text>
                   </View>
