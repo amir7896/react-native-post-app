@@ -6,7 +6,7 @@ import {logout} from '../../features/User/UserSlice';
 
 const Home: React.FC = () => {
   const [user, setUser] = useState<{
-    id: string;
+    userId: string;
     username: string;
     email: string;
   } | null>(null);

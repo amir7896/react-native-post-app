@@ -111,15 +111,15 @@ class PostApi {
   async commentOnPost(
     postId: string,
     content: string,
-  ): Promise<ApiResponse<void>> {
+  ): Promise<ApiResponse<{comment: Comment}>> {
     try {
-      const response: AxiosResponse<ApiResponse<void>> = await Api.post(
-        COMMENT_ON_POST,
-        {
+      const response: AxiosResponse<ApiResponse<{comment: Comment}>> =
+        await Api.post(COMMENT_ON_POST, {
           postId,
           content,
-        },
-      );
+        });
+
+      console.log('Success response on post comment :', response);
       return response.data;
     } catch (error: any) {
       console.log('Error in commenting on post:', error);

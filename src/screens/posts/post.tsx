@@ -10,7 +10,7 @@ import {
   Modal,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {fetchPosts, likePost} from '../../features/Post/PostSlice';
+import {fetchPosts, likePost, addComment} from '../../features/Post/PostSlice';
 import styles from './style';
 import type {RootState, AppDispatch} from '../../app/store';
 import LikeOutLinedIcon from '../../assets/svgs/LikeOutLined';
@@ -54,7 +54,7 @@ function Posts(): React.ReactElement {
   };
 
   const handleCommentSubmit = (postId: string, comment: string) => {
-    console.log('Comment Submitted:', comment, 'for Post:', postId);
+    dispatch(addComment({postId, content: comment}));
     setCommentText('');
   };
 
