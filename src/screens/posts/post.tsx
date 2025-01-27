@@ -6,8 +6,8 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   TextInput,
-  Button,
   Modal,
+  ScrollView,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -48,70 +48,46 @@ function Posts(): React.ReactElement {
   const [commentText, setCommentText] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Fetch posts on component mount and when `start` changes
   useEffect(() => {
     dispatch(fetchPosts({start, limit: 5}));
   }, [start, dispatch]);
 
-  // Handle liking a post
   const handleLike = (postId: string) => {
     dispatch(likePost(postId));
   };
 
-  // Handle adding a comment
   const handleCommentSubmit = (postId: string, comment: string) => {
     if (!comment.trim()) {
       setErrorMessage('Comment cannot be empty');
       return;
     }
 
-    setErrorMessage(null); // Clear previous errors
+    setErrorMessage(null);
     dispatch(addComment({postId, content: comment}))
       .unwrap()
       .then(() => {
-        setCommentText(''); // Clear input on success
+        setCommentText('');
       })
       .catch(() => {
         setErrorMessage('Failed to add comment. Please try again.');
       });
   };
 
-  // Fetch comments for a specific post when modal is opened
   const handleShowComments = (postId: string) => {
     setShowCommentsPostId(postId);
     dispatch(fetchCommentsForPost(postId));
   };
 
-  // Close the comments modal
   const handleHideComments = () => {
     setShowCommentsPostId(null);
-    setErrorMessage(null); // Clear error messages
+    setErrorMessage(null);
   };
 
-  // Render the add comment section
-  const renderAddCommentSection = (postId: string) => (
-    <View style={styles.addCommentSection}>
-      <TextInput
-        value={commentText}
-        onChangeText={setCommentText}
-        style={styles.commentInput}
-        placeholder="Add a comment..."
-      />
-      <Button
-        title="Add Comment"
-        onPress={() => handleCommentSubmit(postId, commentText)}
-        disabled={isLoading || !commentText.trim()}
-      />
-    </View>
-  );
-
-  // Render each post item
   const renderItem = ({item}: {item: Post}) => (
     <View style={styles.card}>
       <Text style={styles.postTitle}>{item.title}</Text>
       <Text style={styles.postBody}>{item.content}</Text>
-
-      <View style={styles.commentSection}>
+      <View style={styles.likeCommentSection}>
         <TouchableOpacity
           style={styles.likeButton}
           onPress={() => handleLike(item._id)}>
@@ -121,33 +97,50 @@ function Posts(): React.ReactElement {
         <TouchableOpacity
           style={styles.commentButton}
           onPress={() => handleShowComments(item._id)}>
-          <Text style={styles.likeButtonText}>Comments</Text>
+          <Text style={styles.commentButtonText}>Comments</Text>
         </TouchableOpacity>
       </View>
 
       {showCommentsPostId === item._id && (
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
-          visible={showCommentsPostId !== null}
+          visible={true}
           onRequestClose={handleHideComments}>
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>Comments</Text>
-              <View style={styles.commentList}>
+              <View style={styles.modalTitleContainer}>
+                <Text style={styles.modalTitle}>Comments</Text>
+              </View>
+              <ScrollView style={styles.scrollableCommentList}>
                 {item.comments.map(comment => (
                   <View key={comment._id} style={styles.commentItem}>
-                    <Text>
-                      {comment.user?.userName || 'Unknown'}: {comment.content}
+                    <Text style={styles.commentUserName}>
+                      {comment.user?.userName || 'Unknown'}:
                     </Text>
+                    <Text style={styles.commentContent}>{comment.content}</Text>
                   </View>
                 ))}
-                {errorMessage && (
-                  <Text style={styles.errorText}>{errorMessage}</Text>
-                )}
-                {renderAddCommentSection(item._id)}
+              </ScrollView>
+              <View style={styles.addCommentSection}>
+                <TextInput
+                  value={commentText}
+                  onChangeText={setCommentText}
+                  style={styles.commentInput}
+                  placeholder="Add a comment..."
+                />
+                <TouchableOpacity
+                  style={styles.addCommentButton}
+                  onPress={() => handleCommentSubmit(item._id, commentText)}
+                  disabled={isLoading || !commentText.trim()}>
+                  <Text style={styles.addCommentButtonText}>Post</Text>
+                </TouchableOpacity>
               </View>
-              <Button title="Close" onPress={handleHideComments} />
+              <TouchableOpacity
+                style={styles.closeModalButton}
+                onPress={handleHideComments}>
+                <Text style={styles.closeModalButtonText}>Close</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
@@ -155,21 +148,18 @@ function Posts(): React.ReactElement {
     </View>
   );
 
-  // Load more posts when reaching the bottom
   const loadMorePosts = () => {
     if (!isLoading) {
       setStart(prevStart => prevStart + 5);
     }
   };
 
-  // Render the header of the post list
   const renderHeader = () => (
     <View>
       <Text>Posts</Text>
     </View>
   );
 
-  // Render the footer of the post list
   const renderFooter = () => {
     return isLoading ? (
       <ActivityIndicator size="large" color="#bdbdbd" />

@@ -3,12 +3,12 @@
 import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
-  // container style
+  // Container style
   container: {
     paddingHorizontal: 24,
     paddingVertical: 32,
   },
-  // card style
+  // Card style
   card: {
     backgroundColor: 'white',
     borderRadius: 8,
@@ -35,16 +35,23 @@ export default StyleSheet.create({
     color: '#666',
   },
 
-  // Like button style (Updated)
+  // Like and comment section container
+  likeCommentSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+
+  // Like button style
   likeButton: {
-    paddingVertical: 8,
+    flex: 0.48, // Ensures each button takes about half the row
+    paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#E4E6EB', // Light blue background similar to Facebook's button color
-    marginRight: 8,
+    backgroundColor: '#E4E6EB',
     borderWidth: 1,
     borderColor: '#BCC0C0',
   },
@@ -53,12 +60,12 @@ export default StyleSheet.create({
     color: '#4C4F56',
     fontWeight: '600',
     fontSize: 16,
-    marginLeft: 6,
   },
 
-  // Comment button style (Updated)
+  // Comment button style
   commentButton: {
-    paddingVertical: 8,
+    flex: 0.48, // Ensures each button takes about half the row
+    paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 20,
     backgroundColor: '#F0F2F5',
@@ -73,51 +80,68 @@ export default StyleSheet.create({
     color: '#4C4F56',
     fontWeight: '600',
     fontSize: 16,
-    marginLeft: 6,
   },
 
-  // Comment section style
+  // Other styles remain unchanged
   commentList: {
     marginVertical: 8,
   },
 
-  // Comment item
   commentItem: {
     backgroundColor: '#f9f9f9',
     padding: 8,
     borderRadius: 4,
     marginVertical: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
   },
 
-  // Add comment input section
+  commentUserName: {
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+
+  commentContent: {
+    fontSize: 14,
+    marginLeft: 4,
+  },
+
   addCommentSection: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    paddingTop: 12,
   },
 
-  // Comment input
   commentInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
+    borderColor: '#ccc',
+    borderRadius: 20,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 10,
+    fontSize: 16,
     marginRight: 8,
+    backgroundColor: '#f8f8f8',
+  },
+
+  addCommentButton: {
+    backgroundColor: '#007bff',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  addCommentButtonText: {
+    color: 'white',
+    fontWeight: '600',
     fontSize: 16,
   },
 
-  // Comment section
-  commentSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 20,
-    marginHorizontal: 1,
-  },
-
-  // Modal background
   modalBackground: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -125,20 +149,45 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
 
-  // Modal container
   modalContainer: {
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: '90%',
     maxHeight: '80%',
   },
 
-  // Modal title
+  scrollableCommentList: {
+    maxHeight: '60%',
+    marginBottom: 16,
+  },
+
+  modalTitleContainer: {
+    backgroundColor: '#007bff',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: 'white',
+  },
+
+  closeModalButton: {
+    marginTop: 16,
+    alignSelf: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#007bff',
+    borderRadius: 6,
+  },
+
+  closeModalButtonText: {
+    color: 'white',
+    fontWeight: '600',
   },
 
   errorText: {
