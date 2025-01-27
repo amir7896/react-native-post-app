@@ -1,6 +1,5 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import PostApi from '../../services/Api/PostApi';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Post {
   _id: string;
@@ -46,31 +45,15 @@ const initialState: PostState = {
   message: '',
 };
 
-// Utility function to get current user from AsyncStorage
-const getCurrentUser = async () => {
-  try {
-    const jsonValue = await AsyncStorage.getItem('user');
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch (e) {
-    console.error('Error reading current user from AsyncStorage', e);
-    return null;
-  }
-};
-
 // Thunk to fetch all posts
 export const fetchPosts = createAsyncThunk(
   'post/fetchPosts',
   async ({start, limit}: {start: number; limit: number}, thunkAPI) => {
     try {
       const response = await PostApi.getAllPosts(start, limit);
-      if (!response) {
-        return thunkAPI.rejectWithValue(response || 'Fetching posts failed');
-      }
       return response.data || [];
     } catch (error: any) {
-      const message =
-        error.response?.data?.message || error.message || error.toString();
-      return thunkAPI.rejectWithValue(message);
+      return thunkAPI.rejectWithValue(error.message || 'Failed to fetch posts');
     }
   },
 );
@@ -81,12 +64,7 @@ export const likePost = createAsyncThunk(
   async (postId: string, thunkAPI) => {
     try {
       const response = await PostApi.likePost(postId);
-      // Directly access response fields
-      if (response.likesCount !== undefined) {
-        return {likesCount: response.likesCount, postId};
-      } else {
-        return thunkAPI.rejectWithValue('Invalid response data');
-      }
+      return {postId, likesCount: response.likesCount};
     } catch (error: any) {
       return thunkAPI.rejectWithValue('Failed to like post');
     }
@@ -98,42 +76,41 @@ export const addComment = createAsyncThunk(
   'post/addComment',
   async ({postId, content}: {postId: string; content: string}, thunkAPI) => {
     try {
-      const user = await getCurrentUser();
-      if (!user) {
-        console.error('User not logged in'); // Log user not logged in error
-        return thunkAPI.rejectWithValue('User not logged in');
-      }
-
       const response = await PostApi.commentOnPost(postId, content);
-      console.log('Comment API response:', response); // Log the API response
-
-      if (response.success && response.data?.comment) {
-        return {postId, comment: response.data.comment};
-      } else {
-        console.error('Failed to add comment'); // Log failed comment addition
-        return thunkAPI.rejectWithValue('Failed to add comment');
-      }
+      return {postId, comment: response.comment};
     } catch (error: any) {
-      console.error('Error in addComment thunk:', error); // Log any error
       return thunkAPI.rejectWithValue('Failed to add comment');
     }
   },
 );
 
-export const postSlice = createSlice({
+// Thunk to fetch comments for a specific post
+export const fetchCommentsForPost = createAsyncThunk(
+  'post/fetchCommentsForPost',
+  async (postId: string, thunkAPI) => {
+    try {
+      const response = await PostApi.getCommentsForPost(postId);
+      return {postId, comments: response.comments};
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue('Failed to fetch comments');
+    }
+  },
+);
+
+const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
     reset: state => {
       state.isLoading = false;
-      state.isSuccess = false;
       state.isError = false;
+      state.isSuccess = false;
       state.message = '';
     },
   },
   extraReducers: builder => {
     builder
-      // Fetch Posts
+      // Fetch posts
       .addCase(fetchPosts.pending, state => {
         state.isLoading = true;
       })
@@ -147,55 +124,80 @@ export const postSlice = createSlice({
         state.isError = true;
         state.message = (action.payload as string) || 'Failed to fetch posts';
       })
-      // Handle likePost.fulfilled
+
+      // Like a post
+      .addCase(likePost.pending, state => {
+        state.isLoading = true;
+      })
       .addCase(
         likePost.fulfilled,
         (
           state,
-          action: PayloadAction<{likesCount: number; postId: string}>,
+          action: PayloadAction<{postId: string; likesCount: number}>,
         ) => {
+          state.isLoading = false;
           const {postId, likesCount} = action.payload;
-          const updatedPost = state.posts.find(post => post._id === postId);
-          if (updatedPost) {
-            updatedPost.likesCount = likesCount;
-          }
+          const post = state.posts.find(post => post._id === postId);
+          if (post) post.likesCount = likesCount;
         },
       )
       .addCase(likePost.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = (action.payload as string) || 'Failed to like post';
+        state.message =
+          (action.payload as string) || 'Failed to like/unlike post';
       })
-      // Handle addComment.fulfilled
 
-      // Handle addComment.fulfilled
+      // Add comment to a post
+      .addCase(addComment.pending, state => {
+        state.isLoading = true;
+      })
       .addCase(
         addComment.fulfilled,
         (
           state,
           action: PayloadAction<{
             postId: string;
-            comment: {
-              _id: string;
-              content: string;
-              user: {_id: string; userName: string};
-            };
+            comment: Comment;
           }>,
         ) => {
+          state.isLoading = false;
           const {postId, comment} = action.payload;
-          console.log('Comment added successfully:', comment); // Log successful comment addition
-          const updatedPost = state.posts.find(post => post._id === postId);
-          if (updatedPost) {
-            updatedPost.comments.push(comment);
-            console.log('Updated post with new comment:', updatedPost); // Log updated post
-          }
+          const post = state.posts.find(post => post._id === postId);
+          if (post) post.comments.push(comment);
         },
       )
       .addCase(addComment.rejected, (state, action) => {
-        console.error('Failed to add comment:', action.payload); // Log failure to add comment
         state.isLoading = false;
         state.isError = true;
-        state.message = (action.payload as string) || 'Failed to add comment';
+        state.message =
+          (action.payload as string) || 'Failed to add comment to post';
+      })
+
+      // Fetch comments for a specific post
+      .addCase(fetchCommentsForPost.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(
+        fetchCommentsForPost.fulfilled,
+        (
+          state,
+          action: PayloadAction<{
+            postId: string;
+            comments: Comment[];
+          }>,
+        ) => {
+          state.isLoading = false;
+          const {postId, comments} = action.payload;
+          const post = state.posts.find(post => post._id === postId);
+          if (post) post.comments = comments;
+        },
+      )
+      .addCase(fetchCommentsForPost.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message =
+          (action.payload as string) || 'Failed to fetch comments for post';
       });
   },
 });

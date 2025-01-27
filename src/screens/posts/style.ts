@@ -140,4 +140,9 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
+
+  errorText: {
+    color: 'red',
+    marginBottom: 8,
+  },
 });
