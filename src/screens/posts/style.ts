@@ -23,12 +23,6 @@ export default StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  //   Post Id style
-  postId: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: '#333',
-  },
   //   Post title style
   postTitle: {
     fontSize: 20,
@@ -46,11 +40,13 @@ export default StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 4,
-    marginVertical: 8,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    backgroundColor: 'blue',
+    marginRight: 8,
   },
+  // Like button text
   likeButtonText: {
     color: 'white',
     fontWeight: '600',
@@ -62,11 +58,12 @@ export default StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 4,
-    marginVertical: 8,
-    backgroundColor: '#4CAF50', // Green color for comment button
+    backgroundColor: '#4CAF50',
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+  // Comment button text
   commentButtonText: {
     color: 'white',
     fontWeight: '600',
@@ -77,6 +74,8 @@ export default StyleSheet.create({
   commentList: {
     marginVertical: 8,
   },
+
+  // Comment item
   commentItem: {
     backgroundColor: '#f9f9f9',
     padding: 8,
@@ -90,6 +89,8 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
   },
+
+  // Comment input
   commentInput: {
     flex: 1,
     borderWidth: 1,
@@ -99,5 +100,38 @@ export default StyleSheet.create({
     paddingVertical: 8,
     marginRight: 8,
     fontSize: 16,
+  },
+
+  // Comment section
+  commentSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 20,
+    marginHorizontal: 1,
+  },
+
+  // Modal background
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Modal container
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    maxHeight: '80%',
+  },
+
+  // Modal title
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
 });
