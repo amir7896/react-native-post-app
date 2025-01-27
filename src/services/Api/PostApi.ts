@@ -45,7 +45,6 @@ class PostApi {
       const response: AxiosResponse<ApiResponse<Posts[]>> = await Api.get(
         `${GET_ALL_POSTS}?start=${start}&limit=${limit}`,
       );
-      console.log('Success in fetching post in api:', response);
       return response.data;
     } catch (error: any) {
       console.log('Error in fetching posts:', error);
