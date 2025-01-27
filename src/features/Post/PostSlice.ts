@@ -42,7 +42,6 @@ export const fetchPosts = createAsyncThunk(
   async ({start, limit}: {start: number; limit: number}, thunkAPI) => {
     try {
       const response = await PostApi.getAllPosts(start, limit);
-
       if (!response) {
         return thunkAPI.rejectWithValue(response || 'Fetching posts failed');
       }
@@ -51,6 +50,24 @@ export const fetchPosts = createAsyncThunk(
       const message =
         error.response?.data?.message || error.message || error.toString();
       return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
+
+// Thunk to like/unlike a post
+export const likePost = createAsyncThunk(
+  'post/likePost',
+  async (postId: string, thunkAPI) => {
+    try {
+      const response = await PostApi.likePost(postId);
+      // Directly access response fields
+      if (response.likesCount !== undefined) {
+        return {likesCount: response.likesCount, postId};
+      } else {
+        return thunkAPI.rejectWithValue('Invalid response data');
+      }
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue('Failed to like post');
     }
   },
 );
@@ -68,6 +85,7 @@ export const postSlice = createSlice({
   },
   extraReducers: builder => {
     builder
+      // Fetch Posts
       .addCase(fetchPosts.pending, state => {
         state.isLoading = true;
       })
@@ -80,6 +98,25 @@ export const postSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = (action.payload as string) || 'Failed to fetch posts';
+      })
+      // Handle likePost.fulfilled
+      .addCase(
+        likePost.fulfilled,
+        (
+          state,
+          action: PayloadAction<{likesCount: number; postId: string}>,
+        ) => {
+          const {postId, likesCount} = action.payload;
+          const updatedPost = state.posts.find(post => post._id === postId);
+          if (updatedPost) {
+            updatedPost.likesCount = likesCount;
+          }
+        },
+      )
+      .addCase(likePost.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = (action.payload as string) || 'Failed to like post';
       });
   },
 });

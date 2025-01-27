@@ -10,7 +10,7 @@ import {
   Modal,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {fetchPosts} from '../../features/Post/PostSlice';
+import {fetchPosts, likePost} from '../../features/Post/PostSlice';
 import styles from './style';
 import type {RootState, AppDispatch} from '../../app/store';
 import LikeOutLinedIcon from '../../assets/svgs/LikeOutLined';
@@ -43,16 +43,14 @@ function Posts(): React.ReactElement {
     null,
   );
   const [commentText, setCommentText] = useState('');
-  const [likedByUser, setLikedByUser] = useState(false);
 
   useEffect(() => {
     dispatch(fetchPosts({start, limit: 5}));
   }, [start, dispatch]);
 
-  // Like post
   const handleLike = (postId: string) => {
-    setLikedByUser(!likedByUser);
-    console.log(likedByUser ? 'Liked' : 'Unliked', postId);
+    // Dispatch like/unlike action
+    dispatch(likePost(postId));
   };
 
   const handleCommentSubmit = (postId: string, comment: string) => {
@@ -60,12 +58,10 @@ function Posts(): React.ReactElement {
     setCommentText('');
   };
 
-  // Show comment section
   const handleShowComments = (postId: string) => {
     setShowCommentsPostId(postId);
   };
 
-  // Hide comment section
   const handleHideComments = () => {
     setShowCommentsPostId(null);
   };
@@ -75,7 +71,6 @@ function Posts(): React.ReactElement {
       <Text style={styles.postTitle}>{item.title}</Text>
       <Text style={styles.postBody}>{item.content}</Text>
 
-      {/* Button section  */}
       <View style={styles.commentSection}>
         <TouchableOpacity
           style={[styles.likeButton]}
@@ -84,7 +79,6 @@ function Posts(): React.ReactElement {
           <Text style={styles.likeButtonText}>{item.likesCount}</Text>
         </TouchableOpacity>
 
-        {/* Comment button */}
         <TouchableOpacity
           style={styles.commentButton}
           onPress={() => handleShowComments(item._id)}>
@@ -92,7 +86,6 @@ function Posts(): React.ReactElement {
         </TouchableOpacity>
       </View>
 
-      {/* Comment Modal */}
       {showCommentsPostId === item._id && (
         <Modal
           animationType="slide"
@@ -111,7 +104,6 @@ function Posts(): React.ReactElement {
                   </View>
                 ))}
 
-                {/* Add Comment Input */}
                 <View style={styles.addCommentSection}>
                   <TextInput
                     value={commentText}
