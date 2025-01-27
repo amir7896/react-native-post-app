@@ -46,7 +46,7 @@ const Home: React.FC = () => {
         <>
           <Text style={styles.infoText}>Username: {user.username}</Text>
           <Text style={styles.infoText}>Email: {user.email}</Text>
-          <Text style={styles.infoText}>User ID: {user.id}</Text>
+          <Text style={styles.infoText}>User ID: {user.userId}</Text>
         </>
       ) : (
         <Text style={styles.infoText}>Loading user information...</Text>
