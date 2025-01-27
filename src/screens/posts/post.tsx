@@ -146,6 +146,7 @@ function Posts(): React.ReactElement {
                   <Text style={styles.addCommentButtonText}>Post</Text>
                 </TouchableOpacity>
               </View>
+              <Text style={styles.errorText}>{errorMessage}</Text>
               <TouchableOpacity
                 style={styles.closeModalButton}
                 onPress={handleHideComments}>
