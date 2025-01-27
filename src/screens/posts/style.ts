@@ -40,4 +40,64 @@ export default StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
+
+  // Like button style
+  likeButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    marginVertical: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  likeButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+
+  // Comment button style
+  commentButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    marginVertical: 8,
+    backgroundColor: '#4CAF50', // Green color for comment button
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  commentButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+
+  // Comment section style
+  commentList: {
+    marginVertical: 8,
+  },
+  commentItem: {
+    backgroundColor: '#f9f9f9',
+    padding: 8,
+    borderRadius: 4,
+    marginVertical: 4,
+  },
+
+  // Add comment input section
+  addCommentSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  commentInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginRight: 8,
+    fontSize: 16,
+  },
 });
