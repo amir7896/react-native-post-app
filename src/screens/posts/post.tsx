@@ -14,6 +14,7 @@ import {fetchPosts} from '../../features/Post/PostSlice';
 import styles from './style';
 import type {RootState, AppDispatch} from '../../app/store';
 import LikeOutLinedIcon from '../../assets/svgs/LikeOutLined';
+import CommentOutLinedIcon from '../../assets/svgs/CommentOutLined';
 
 type Post = {
   _id: string;
@@ -76,18 +77,18 @@ function Posts(): React.ReactElement {
 
       {/* Button section  */}
       <View style={styles.commentSection}>
-        {/* Like button */}
         <TouchableOpacity
           style={[styles.likeButton]}
           onPress={() => handleLike(item._id)}>
-          <LikeOutLinedIcon width={20} height={20} />{' '}
-          <Text style={styles.likeButtonText}> Like {item.likesCount}</Text>
+          <LikeOutLinedIcon width={20} height={20} />
+          <Text style={styles.likeButtonText}>{item.likesCount}</Text>
         </TouchableOpacity>
+
         {/* Comment button */}
         <TouchableOpacity
           style={styles.commentButton}
           onPress={() => handleShowComments(item._id)}>
-          <Text style={styles.commentButtonText}>Comments</Text>
+          <CommentOutLinedIcon width={20} height={20} />
         </TouchableOpacity>
       </View>
 

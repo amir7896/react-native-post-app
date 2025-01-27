@@ -8,7 +8,7 @@ export default StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 32,
   },
-  //   card style
+  // card style
   card: {
     backgroundColor: 'white',
     borderRadius: 8,
@@ -23,51 +23,57 @@ export default StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  //   Post title style
+  // Post title style
   postTitle: {
     fontSize: 20,
     fontWeight: '600',
     marginVertical: 4,
   },
-  //   Post body style
+  // Post body style
   postBody: {
     fontSize: 16,
     color: '#666',
   },
 
-  // Like button style
+  // Like button style (Updated)
   likeButton: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    borderRadius: 4,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
-    backgroundColor: 'blue',
+    backgroundColor: '#E4E6EB', // Light blue background similar to Facebook's button color
     marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#BCC0C0',
   },
   // Like button text
   likeButtonText: {
-    color: 'white',
+    color: '#4C4F56',
     fontWeight: '600',
     fontSize: 16,
+    marginLeft: 6,
   },
 
-  // Comment button style
+  // Comment button style (Updated)
   commentButton: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    borderRadius: 4,
-    backgroundColor: '#4CAF50',
+    borderRadius: 20,
+    backgroundColor: '#F0F2F5',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#BCC0C0',
   },
 
   // Comment button text
   commentButtonText: {
-    color: 'white',
+    color: '#4C4F56',
     fontWeight: '600',
     fontSize: 16,
+    marginLeft: 6,
   },
 
   // Comment section style
