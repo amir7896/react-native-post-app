@@ -32,6 +32,7 @@ interface Comment {
     _id: string;
     userName: string;
   };
+  data: any;
 }
 
 class PostApi {
@@ -83,21 +84,22 @@ class PostApi {
   async commentOnPost(
     postId: string,
     content: string,
-  ): Promise<{success: boolean; message: string; comment: Comment}> {
+  ): Promise<{
+    success: boolean;
+    message: string;
+    comment: Comment;
+  }> {
     try {
       const response: AxiosResponse<{
         success: boolean;
         message: string;
         comment: Comment;
       }> = await Api.post(COMMENT_ON_POST, {postId, content});
+      console.log('PostApi Add Comment Response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('Error commenting on post:', error);
-      return {
-        success: false,
-        message: 'Failed to comment on post',
-        comment: null!,
-      };
+      throw new Error(error.response?.data?.message || 'Failed to add comment');
     }
   }
 

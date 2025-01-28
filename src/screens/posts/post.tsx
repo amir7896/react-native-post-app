@@ -27,14 +27,7 @@ type Post = {
     userId: string;
     userName: string;
   };
-  comments: {
-    _id: string;
-    content: string;
-    user: {
-      _id: string;
-      userName: string;
-    };
-  }[];
+
   likesCount: number;
 };
 
@@ -189,7 +182,7 @@ function Posts(): React.ReactElement {
       renderItem={renderItem}
       keyExtractor={item => item._id.toString()}
       contentContainerStyle={styles.container}
-      // onEndReached={loadMorePosts}
+      onEndReached={loadMorePosts}
       onEndReachedThreshold={0.5}
       ListFooterComponent={renderFooter}
       ListHeaderComponent={renderHeader}

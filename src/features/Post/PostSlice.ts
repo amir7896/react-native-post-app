@@ -66,14 +66,15 @@ export const likePost = createAsyncThunk(
 );
 
 // Thunk to comment on a post
+// Add a comment thunk
 export const addComment = createAsyncThunk(
   'post/addComment',
   async ({postId, content}: {postId: string; content: string}, thunkAPI) => {
     try {
       const response = await PostApi.commentOnPost(postId, content);
-      return {postId, comment: response.comment};
+      return response; // Return full response to be handled in extraReducers
     } catch (error: any) {
-      return thunkAPI.rejectWithValue('Failed to add comment');
+      return thunkAPI.rejectWithValue(error.message || 'Failed to add comment');
     }
   },
 );
@@ -150,13 +151,19 @@ const postSlice = createSlice({
       .addCase(addComment.pending, state => {
         state.isLoading = true;
       })
-      .addCase(
-        addComment.fulfilled,
-        (state, action: PayloadAction<{postId: string; comment: Comment}>) => {
-          console.log('Add comment Full filled Action:', action.payload);
-          state.isLoading = false;
-        },
-      )
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+
+        const {comment} = action.payload;
+        const updatedComment = {
+          content: comment.content,
+          user: comment.user,
+          _id: comment._id,
+        };
+
+        state.comments.push(updatedComment);
+      })
       .addCase(addComment.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
