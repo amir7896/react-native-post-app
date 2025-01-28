@@ -18,6 +18,7 @@ import {
 } from '../../features/Post/PostSlice';
 import styles from './style';
 import type {RootState, AppDispatch} from '../../app/store';
+import {LikeIcon, CommentIcon} from '../../assets/svgs';
 
 type Post = {
   _id: string;
@@ -91,17 +92,23 @@ function Posts(): React.ReactElement {
     <View style={styles.card}>
       <Text style={styles.postTitle}>{item.title}</Text>
       <Text style={styles.postBody}>{item.content}</Text>
+      {/* Like and comment Buttons */}
       <View style={styles.likeCommentSection}>
+        {/* Like Button */}
         <TouchableOpacity
           style={styles.likeButton}
           onPress={() => handleLike(item._id)}>
-          <Text style={styles.likeButtonText}>Likes: {item.likesCount}</Text>
+          <LikeIcon width={16} height={16} fill="#5d4037" />{' '}
+          {/* Smaller icon */}
+          <Text style={styles.likeButtonText}>{item.likesCount}</Text>
         </TouchableOpacity>
 
+        {/* Comment Button */}
         <TouchableOpacity
           style={styles.commentButton}
           onPress={() => handleShowComments(item._id)}>
-          <Text style={styles.commentButtonText}>Comments</Text>
+          <CommentIcon width={16} height={16} fill="#4C4F56" />{' '}
+          {/* Smaller icon */}
         </TouchableOpacity>
       </View>
 

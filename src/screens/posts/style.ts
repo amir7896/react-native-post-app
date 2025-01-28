@@ -40,37 +40,41 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 14,
   },
 
   // Like button style
   likeButton: {
-    flex: 0.48, // Ensures each button takes about half the row
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    flexDirection: 'row',
+    width: 100,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#E4E6EB',
     borderWidth: 1,
     borderColor: '#BCC0C0',
   },
+
   // Like button text
   likeButtonText: {
     color: '#4C4F56',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 14,
+    marginLeft: 6,
   },
 
   // Comment button style
   commentButton: {
-    flex: 0.48, // Ensures each button takes about half the row
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    backgroundColor: '#F0F2F5',
+    flexDirection: 'row',
+    width: 100,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#F0F2F5',
     borderWidth: 1,
     borderColor: '#BCC0C0',
   },
@@ -79,7 +83,8 @@ export default StyleSheet.create({
   commentButtonText: {
     color: '#4C4F56',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 14,
+    marginLeft: 6,
   },
 
   // Other styles remain unchanged
