@@ -132,15 +132,6 @@ export default StyleSheet.create({
     backgroundColor: '#f8f8f8',
   },
 
-  addCommentButton: {
-    backgroundColor: '#007bff',
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
   addCommentButtonText: {
     color: 'white',
     fontWeight: '600',
@@ -163,16 +154,23 @@ export default StyleSheet.create({
   },
 
   scrollableCommentList: {
-    maxHeight: '60%',
+    maxHeight: '80%',
     marginBottom: 16,
   },
 
   modalTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: '#007bff',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
     marginBottom: 16,
+  },
+
+  cancelIconContainer: {
+    paddingTop: 5,
   },
 
   modalTitle: {

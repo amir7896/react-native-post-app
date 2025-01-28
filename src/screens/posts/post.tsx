@@ -18,7 +18,7 @@ import {
 } from '../../features/Post/PostSlice';
 import styles from './style';
 import type {RootState, AppDispatch} from '../../app/store';
-import {LikeIcon, CommentIcon} from '../../assets/svgs';
+import {LikeIcon, CommentIcon, CancelIcon, AddIcon} from '../../assets/svgs';
 
 type Post = {
   _id: string;
@@ -98,7 +98,7 @@ function Posts(): React.ReactElement {
         <TouchableOpacity
           style={styles.likeButton}
           onPress={() => handleLike(item._id)}>
-          <LikeIcon width={16} height={16} fill="#5d4037" />{' '}
+          <LikeIcon width={16} height={16} fill="#5d4037" />
           {/* Smaller icon */}
           <Text style={styles.likeButtonText}>{item.likesCount}</Text>
         </TouchableOpacity>
@@ -107,7 +107,7 @@ function Posts(): React.ReactElement {
         <TouchableOpacity
           style={styles.commentButton}
           onPress={() => handleShowComments(item._id)}>
-          <CommentIcon width={16} height={16} fill="#4C4F56" />{' '}
+          <CommentIcon width={16} height={16} fill="#4C4F56" />
           {/* Smaller icon */}
         </TouchableOpacity>
       </View>
@@ -120,13 +120,20 @@ function Posts(): React.ReactElement {
           onRequestClose={handleHideComments}>
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
+              {/* Title with Cancel Icon */}
               <View style={styles.modalTitleContainer}>
                 <Text style={styles.modalTitle}>Comments</Text>
+                <TouchableOpacity
+                  onPress={handleHideComments}
+                  style={styles.cancelIconContainer}>
+                  <CancelIcon width={20} height={20} fill="white" />
+                </TouchableOpacity>
               </View>
+
+              {/* Comments Section */}
               <ScrollView
                 style={styles.scrollableCommentList}
-                ref={scrollViewRef} // Attach the reference
-              >
+                ref={scrollViewRef}>
                 {comments?.map(comment => (
                   <View key={comment?._id} style={styles.commentItem}>
                     <Text style={styles.commentUserName}>
@@ -138,6 +145,8 @@ function Posts(): React.ReactElement {
                   </View>
                 ))}
               </ScrollView>
+
+              {/* Add Comment Section */}
               <View style={styles.addCommentSection}>
                 <TextInput
                   value={commentText}
@@ -146,18 +155,12 @@ function Posts(): React.ReactElement {
                   placeholder="Add a comment..."
                 />
                 <TouchableOpacity
-                  style={styles.addCommentButton}
                   onPress={() => handleCommentSubmit(item._id, commentText)}
                   disabled={isLoading || !commentText.trim()}>
-                  <Text style={styles.addCommentButtonText}>Post</Text>
+                  <AddIcon height={24} width={24} />
                 </TouchableOpacity>
               </View>
               <Text style={styles.errorText}>{errorMessage}</Text>
-              <TouchableOpacity
-                style={styles.closeModalButton}
-                onPress={handleHideComments}>
-                <Text style={styles.closeModalButtonText}>Close</Text>
-              </TouchableOpacity>
             </View>
           </View>
         </Modal>
