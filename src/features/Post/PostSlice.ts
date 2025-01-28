@@ -10,6 +10,7 @@ interface Post {
     userName: string;
   };
   likesCount: number;
+  isLikedByUser: boolean;
 }
 
 interface Comment {
@@ -28,6 +29,7 @@ interface PostState {
   isError: boolean;
   isSuccess: boolean;
   message: string;
+  isLikedByUser: boolean;
 }
 
 const initialState: PostState = {
@@ -37,6 +39,7 @@ const initialState: PostState = {
   isError: false,
   isSuccess: false,
   message: '',
+  isLikedByUser: false,
 };
 
 // Thunk to fetch all posts
@@ -58,7 +61,12 @@ export const likePost = createAsyncThunk(
   async (postId: string, thunkAPI) => {
     try {
       const response = await PostApi.likePost(postId);
-      return {postId, likesCount: response.likesCount};
+
+      return {
+        postId,
+        likesCount: response.likesCount,
+        isLikedByUser: response.isLikedByUser,
+      };
     } catch (error: any) {
       return thunkAPI.rejectWithValue('Failed to like post');
     }
@@ -66,13 +74,12 @@ export const likePost = createAsyncThunk(
 );
 
 // Thunk to comment on a post
-// Add a comment thunk
 export const addComment = createAsyncThunk(
   'post/addComment',
   async ({postId, content}: {postId: string; content: string}, thunkAPI) => {
     try {
       const response = await PostApi.commentOnPost(postId, content);
-      return response; // Return full response to be handled in extraReducers
+      return response;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message || 'Failed to add comment');
     }
@@ -128,15 +135,20 @@ const postSlice = createSlice({
         likePost.fulfilled,
         (
           state,
-          action: PayloadAction<{postId: string; likesCount: number}>,
+          action: PayloadAction<{
+            postId: string;
+            likesCount: number;
+            isLikedByUser: boolean;
+          }>,
         ) => {
           state.isLoading = false;
-          const {postId, likesCount} = action.payload;
+          const {postId, likesCount, isLikedByUser} = action.payload;
           const post = state.posts.find(
             singlePost => singlePost._id === postId,
           );
           if (post) {
             post.likesCount = likesCount;
+            post.isLikedByUser = isLikedByUser;
           }
         },
       )
@@ -185,7 +197,7 @@ const postSlice = createSlice({
           }>,
         ) => {
           state.isLoading = false;
-          state.comments = action.payload.comments; // Set comments state
+          state.comments = action.payload.comments;
         },
       )
       .addCase(fetchCommentsForPost.rejected, (state, action) => {

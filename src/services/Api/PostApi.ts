@@ -16,6 +16,7 @@ interface Post {
     userName: string;
   };
   likesCount: number;
+  isLikedByUser: boolean;
 }
 
 interface ApiResponse<T> {
@@ -67,12 +68,18 @@ class PostApi {
   // Like or unlike a post
   async likePost(
     postId: string,
-  ): Promise<{success: boolean; message: string; likesCount: number}> {
+  ): Promise<{
+    success: boolean;
+    message: string;
+    likesCount: number;
+    isLikedByUser: boolean;
+  }> {
     try {
       const response: AxiosResponse<{
         success: boolean;
         message: string;
         likesCount: number;
+        isLikedByUser: boolean;
       }> = await Api.post(LIKE_POST, {postId});
       return response.data;
     } catch (error) {

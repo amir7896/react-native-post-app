@@ -18,7 +18,13 @@ import {
 } from '../../features/Post/PostSlice';
 import styles from './style';
 import type {RootState, AppDispatch} from '../../app/store';
-import {LikeIcon, CommentIcon, CancelIcon, AddIcon} from '../../assets/svgs';
+import {
+  LikeIcon,
+  CommentIcon,
+  CancelIcon,
+  AddIcon,
+  LikeFilledIcons,
+} from '../../assets/svgs';
 
 type Post = {
   _id: string;
@@ -30,6 +36,7 @@ type Post = {
   };
 
   likesCount: number;
+  isLikedByUser: boolean;
 };
 
 function Posts(): React.ReactElement {
@@ -98,7 +105,11 @@ function Posts(): React.ReactElement {
         <TouchableOpacity
           style={styles.likeButton}
           onPress={() => handleLike(item._id)}>
-          <LikeIcon width={16} height={16} fill="#5d4037" />
+          {item?.isLikedByUser ? (
+            <LikeFilledIcons width={16} height={16} />
+          ) : (
+            <LikeIcon width={16} height={16} fill="red" />
+          )}
           {/* Smaller icon */}
           <Text style={styles.likeButtonText}>{item.likesCount}</Text>
         </TouchableOpacity>
