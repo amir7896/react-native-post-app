@@ -3,12 +3,12 @@
 import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
-  // container style
+  // Container style
   container: {
     paddingHorizontal: 24,
     paddingVertical: 32,
   },
-  //   card style
+  // Card style
   card: {
     backgroundColor: 'white',
     borderRadius: 8,
@@ -23,21 +23,175 @@ export default StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  //   Post Id style
-  postId: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: '#333',
-  },
-  //   Post title style
+  // Post title style
   postTitle: {
     fontSize: 20,
     fontWeight: '600',
     marginVertical: 4,
   },
-  //   Post body style
+  // Post body style
   postBody: {
     fontSize: 16,
     color: '#666',
+  },
+
+  // Like and comment section container
+  likeCommentSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+
+  // Like button style
+  likeButton: {
+    flex: 0.48, // Ensures each button takes about half the row
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#E4E6EB',
+    borderWidth: 1,
+    borderColor: '#BCC0C0',
+  },
+  // Like button text
+  likeButtonText: {
+    color: '#4C4F56',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+
+  // Comment button style
+  commentButton: {
+    flex: 0.48, // Ensures each button takes about half the row
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: '#F0F2F5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#BCC0C0',
+  },
+
+  // Comment button text
+  commentButtonText: {
+    color: '#4C4F56',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+
+  // Other styles remain unchanged
+  commentList: {
+    marginVertical: 8,
+  },
+
+  commentItem: {
+    backgroundColor: '#f9f9f9',
+    padding: 8,
+    borderRadius: 4,
+    marginVertical: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+
+  commentUserName: {
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+
+  commentContent: {
+    fontSize: 14,
+    marginLeft: 4,
+  },
+
+  addCommentSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    paddingTop: 12,
+  },
+
+  commentInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    marginRight: 8,
+    backgroundColor: '#f8f8f8',
+  },
+
+  addCommentButton: {
+    backgroundColor: '#007bff',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  addCommentButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '90%',
+    maxHeight: '80%',
+  },
+
+  scrollableCommentList: {
+    maxHeight: '60%',
+    marginBottom: 16,
+  },
+
+  modalTitleContainer: {
+    backgroundColor: '#007bff',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+
+  closeModalButton: {
+    marginTop: 16,
+    alignSelf: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#007bff',
+    borderRadius: 6,
+  },
+
+  closeModalButtonText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+
+  errorText: {
+    color: 'red',
+    marginBottom: 8,
   },
 });
