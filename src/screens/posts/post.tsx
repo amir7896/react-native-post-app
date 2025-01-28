@@ -62,7 +62,7 @@ function Posts(): React.ReactElement {
           {item.isLikedByUser ? (
             <LikeFilledIcons width={16} height={16} />
           ) : (
-            <LikeIcon width={16} height={16} fill="red" />
+            <LikeIcon width={16} height={16} />
           )}
           <Text style={styles.likeButtonText}>{item.likesCount}</Text>
         </TouchableOpacity>

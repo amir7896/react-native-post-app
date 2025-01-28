@@ -93,7 +93,7 @@ const CommentModal: React.FC<CommentModalProps> = ({
           {/* Comments Section */}
           {isLoading ? (
             <ActivityIndicator size="large" color="#bdbdbd" />
-          ) : (
+          ) : comments && comments.length > 0 ? (
             <ScrollView
               style={styles.scrollableCommentList}
               ref={scrollViewRef}>
@@ -106,6 +106,10 @@ const CommentModal: React.FC<CommentModalProps> = ({
                 </View>
               ))}
             </ScrollView>
+          ) : (
+            <View>
+              <Text>No comment yet.</Text>
+            </View>
           )}
 
           {/* Add Comment Section */}
