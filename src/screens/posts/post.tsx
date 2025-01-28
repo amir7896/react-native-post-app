@@ -10,7 +10,12 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {fetchPosts, likePost} from '../../features/Post/PostSlice';
 import type {RootState, AppDispatch} from '../../app/store';
-import {LikeIcon, CommentIcon, LikeFilledIcons} from '../../assets/svgs';
+import {
+  LikeIcon,
+  CommentIcon,
+  LikeFilledIcons,
+  AddPostIcon,
+} from '../../assets/svgs';
 import CommentModal from './CommentModal';
 
 import styles from './style';
@@ -84,6 +89,12 @@ function Posts(): React.ReactElement {
 
   return (
     <>
+      <View style={styles.addPostContainer}>
+        <TouchableOpacity
+          onPress={() => console.log('Add post icons pressed!')}>
+          <AddPostIcon height={30} width={30} />
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={posts}
         renderItem={renderItem}
