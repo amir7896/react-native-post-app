@@ -15,14 +15,6 @@ interface Post {
     userId: string;
     userName: string;
   };
-  comments: {
-    _id: string;
-    content: string;
-    user: {
-      _id: string;
-      userName: string;
-    };
-  }[];
   likesCount: number;
 }
 

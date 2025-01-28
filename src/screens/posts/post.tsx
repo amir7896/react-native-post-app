@@ -40,13 +40,17 @@ type Post = {
 
 function Posts(): React.ReactElement {
   const dispatch = useDispatch<AppDispatch>();
-  const {posts, isLoading} = useSelector((state: RootState) => state.post);
+  const {posts, isLoading, comments} = useSelector(
+    (state: RootState) => state.post,
+  );
   const [start, setStart] = useState(0);
   const [showCommentsPostId, setShowCommentsPostId] = useState<string | null>(
     null,
   );
   const [commentText, setCommentText] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  console.log('Single Post comments:', comments);
 
   // Reference for ScrollView
   const scrollViewRef = useRef<ScrollView>(null);
@@ -123,12 +127,14 @@ function Posts(): React.ReactElement {
                 style={styles.scrollableCommentList}
                 ref={scrollViewRef} // Attach the reference
               >
-                {item.comments.map(comment => (
-                  <View key={comment._id} style={styles.commentItem}>
+                {comments?.map(comment => (
+                  <View key={comment?._id} style={styles.commentItem}>
                     <Text style={styles.commentUserName}>
-                      User: {comment.user?.userName || 'Unknown'}
+                      User: {comment?.user?.userName || 'Unknown'}
                     </Text>
-                    <Text style={styles.commentContent}>{comment.content}</Text>
+                    <Text style={styles.commentContent}>
+                      {comment?.content}
+                    </Text>
                   </View>
                 ))}
               </ScrollView>
@@ -183,7 +189,7 @@ function Posts(): React.ReactElement {
       renderItem={renderItem}
       keyExtractor={item => item._id.toString()}
       contentContainerStyle={styles.container}
-      onEndReached={loadMorePosts}
+      // onEndReached={loadMorePosts}
       onEndReachedThreshold={0.5}
       ListFooterComponent={renderFooter}
       ListHeaderComponent={renderHeader}

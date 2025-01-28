@@ -9,14 +9,6 @@ interface Post {
     userId: string;
     userName: string;
   };
-  comments: {
-    _id: string;
-    content: string;
-    user: {
-      _id: string;
-      userName: string;
-    };
-  }[];
   likesCount: number;
 }
 
@@ -31,6 +23,7 @@ interface Comment {
 
 interface PostState {
   posts: Post[];
+  comments: Comment[];
   isLoading: boolean;
   isError: boolean;
   isSuccess: boolean;
@@ -39,6 +32,7 @@ interface PostState {
 
 const initialState: PostState = {
   posts: [],
+  comments: [],
   isLoading: false,
   isError: false,
   isSuccess: false,
@@ -137,8 +131,12 @@ const postSlice = createSlice({
         ) => {
           state.isLoading = false;
           const {postId, likesCount} = action.payload;
-          const post = state.posts.find(post => post._id === postId);
-          if (post) post.likesCount = likesCount;
+          const post = state.posts.find(
+            singlePost => singlePost._id === postId,
+          );
+          if (post) {
+            post.likesCount = likesCount;
+          }
         },
       )
       .addCase(likePost.rejected, (state, action) => {
@@ -154,17 +152,9 @@ const postSlice = createSlice({
       })
       .addCase(
         addComment.fulfilled,
-        (
-          state,
-          action: PayloadAction<{
-            postId: string;
-            comment: Comment;
-          }>,
-        ) => {
+        (state, action: PayloadAction<{postId: string; comment: Comment}>) => {
+          console.log('Add comment Full filled Action:', action.payload);
           state.isLoading = false;
-          const {postId, comment} = action.payload;
-          const post = state.posts.find(post => post._id === postId);
-          if (post) post.comments.push(comment);
         },
       )
       .addCase(addComment.rejected, (state, action) => {
@@ -188,9 +178,7 @@ const postSlice = createSlice({
           }>,
         ) => {
           state.isLoading = false;
-          const {postId, comments} = action.payload;
-          const post = state.posts.find(post => post._id === postId);
-          if (post) post.comments = comments;
+          state.comments = action.payload.comments; // Set comments state
         },
       )
       .addCase(fetchCommentsForPost.rejected, (state, action) => {
