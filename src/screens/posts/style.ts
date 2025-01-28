@@ -197,4 +197,11 @@ export default StyleSheet.create({
     color: 'red',
     marginBottom: 8,
   },
+
+  addPostContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    paddingTop: 15,
+    paddingHorizontal: 25,
+  },
 });
