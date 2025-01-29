@@ -32,17 +32,29 @@ type Post = {
   isLikedByUser: boolean;
 };
 
-function Posts(): React.ReactElement {
+const Posts: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const {posts, isLoading} = useSelector((state: RootState) => state.post);
+
   const [start, setStart] = useState(0);
   const [showCommentsPostId, setShowCommentsPostId] = useState<string | null>(
     null,
   );
+  const [hasMorePosts, setHasMorePosts] = useState(true); // ✅ Track if more posts exist
 
   useEffect(() => {
-    dispatch(fetchPosts({start, limit: 5}));
-  }, [start, dispatch]);
+    const fetchData = async () => {
+      const result = await dispatch(fetchPosts({start, limit: 5})).unwrap();
+
+      if (result.length < 5) {
+        setHasMorePosts(false); // ✅ No more posts available
+      }
+    };
+
+    if (hasMorePosts) {
+      fetchData();
+    }
+  }, [start, dispatch, hasMorePosts]);
 
   const handleLike = (postId: string) => {
     dispatch(likePost(postId));
@@ -82,7 +94,8 @@ function Posts(): React.ReactElement {
   );
 
   const loadMorePosts = () => {
-    if (!isLoading) {
+    if (!isLoading && hasMorePosts) {
+      // ✅ Prevent loading if no more posts
       setStart(prevStart => prevStart + 5);
     }
   };
@@ -90,11 +103,11 @@ function Posts(): React.ReactElement {
   return (
     <>
       <View style={styles.addPostContainer}>
-        <TouchableOpacity
-          onPress={() => console.log('Add post icons pressed!')}>
+        <TouchableOpacity onPress={() => console.log('Add post icon pressed!')}>
           <AddPostIcon height={30} width={30} />
         </TouchableOpacity>
       </View>
+
       <FlatList
         data={posts}
         renderItem={renderItem}
@@ -103,9 +116,14 @@ function Posts(): React.ReactElement {
         onEndReached={loadMorePosts}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
-          isLoading ? <ActivityIndicator size="large" color="#bdbdbd" /> : null
+          isLoading ? (
+            <ActivityIndicator size="large" color="#bdbdbd" />
+          ) : !hasMorePosts && posts.length > 0 ? (
+            <Text>No more posts</Text>
+          ) : null
         }
       />
+
       {showCommentsPostId && (
         <CommentModal
           isVisible={!!showCommentsPostId}
@@ -115,6 +133,6 @@ function Posts(): React.ReactElement {
       )}
     </>
   );
-}
+};
 
 export default Posts;
