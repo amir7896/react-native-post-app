@@ -40,10 +40,21 @@ const Posts: React.FC = () => {
   const [showCommentsPostId, setShowCommentsPostId] = useState<string | null>(
     null,
   );
+  const [hasMorePosts, setHasMorePosts] = useState(true); // ✅ Track if more posts exist
 
   useEffect(() => {
-    dispatch(fetchPosts({start, limit: 5}));
-  }, [start, dispatch]);
+    const fetchData = async () => {
+      const result = await dispatch(fetchPosts({start, limit: 5})).unwrap();
+
+      if (result.length < 5) {
+        setHasMorePosts(false); // ✅ No more posts available
+      }
+    };
+
+    if (hasMorePosts) {
+      fetchData();
+    }
+  }, [start, dispatch, hasMorePosts]);
 
   const handleLike = (postId: string) => {
     dispatch(likePost(postId));
@@ -83,7 +94,8 @@ const Posts: React.FC = () => {
   );
 
   const loadMorePosts = () => {
-    if (!isLoading) {
+    if (!isLoading && hasMorePosts) {
+      // ✅ Prevent loading if no more posts
       setStart(prevStart => prevStart + 5);
     }
   };
@@ -104,7 +116,11 @@ const Posts: React.FC = () => {
         onEndReached={loadMorePosts}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
-          isLoading ? <ActivityIndicator size="large" color="#bdbdbd" /> : null
+          isLoading ? (
+            <ActivityIndicator size="large" color="#bdbdbd" />
+          ) : !hasMorePosts && posts.length > 0 ? (
+            <Text>No more posts</Text>
+          ) : null
         }
       />
 
