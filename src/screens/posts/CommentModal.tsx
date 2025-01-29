@@ -33,18 +33,25 @@ const CommentModal: React.FC<CommentModalProps> = ({
   const [commentText, setCommentText] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false); // New state to track first fetch
 
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // Fetch comments when the modal is opened
   useEffect(() => {
-    if (postId && isVisible) {
+    if (postId && isVisible && !hasFetched) {
       dispatch(fetchCommentsForPost(postId));
+      setHasFetched(true); // Mark as fetched to prevent continuous re-fetching
     }
-  }, [dispatch, postId, isVisible]);
+  }, [dispatch, postId, isVisible, hasFetched]);
 
-  // Submit comment method
-  const handleCommentSubmit = () => {
+  // Reset hasFetched when modal closes
+  useEffect(() => {
+    if (!isVisible) {
+      setHasFetched(false);
+    }
+  }, [isVisible]);
+
+  const handleCommentSubmit = async () => {
     if (!commentText.trim()) {
       setErrorMessage('Comment cannot be empty');
       return;
@@ -53,34 +60,30 @@ const CommentModal: React.FC<CommentModalProps> = ({
     setErrorMessage(null);
     setIsSubmitting(true);
 
-    if (postId) {
-      dispatch(addComment({postId, content: commentText}))
-        .unwrap()
-        .then(() => {
-          setCommentText('');
-          // Scroll to the bottom when a new comment is added
-          setTimeout(() => {
-            scrollViewRef.current?.scrollToEnd({animated: true});
-          }, 100);
-        })
-        .catch(() => {
-          setErrorMessage('Failed to add comment. Please try again.');
-        })
-        .finally(() => {
-          setIsSubmitting(false);
-        });
+    try {
+      if (postId) {
+        await dispatch(addComment({postId, content: commentText})).unwrap();
+        setCommentText('');
+        setTimeout(
+          () => scrollViewRef.current?.scrollToEnd({animated: true}),
+          100,
+        );
+      }
+    } catch {
+      setErrorMessage('Failed to add comment. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={isVisible}
       onRequestClose={onClose}>
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
-          {/* Header */}
           <View style={styles.modalTitleContainer}>
             <Text style={styles.modalTitle}>Comments</Text>
             <TouchableOpacity
@@ -90,29 +93,25 @@ const CommentModal: React.FC<CommentModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          {/* Comments Section */}
-          {isLoading ? (
+          {isLoading && !comments.length ? (
             <ActivityIndicator size="large" color="#bdbdbd" />
-          ) : comments && comments.length > 0 ? (
+          ) : comments?.length ? (
             <ScrollView
               style={styles.scrollableCommentList}
               ref={scrollViewRef}>
-              {comments.map(comment => (
-                <View key={comment._id} style={styles.commentItem}>
+              {comments.map(({_id, user, content}) => (
+                <View key={_id} style={styles.commentItem}>
                   <Text style={styles.commentUserName}>
-                    User: {comment.user?.userName || 'Unknown'}
+                    {user?.userName || 'Unknown'}
                   </Text>
-                  <Text style={styles.commentContent}>{comment.content}</Text>
+                  <Text style={styles.commentContent}>{content}</Text>
                 </View>
               ))}
             </ScrollView>
           ) : (
-            <View>
-              <Text>No comment yet.</Text>
-            </View>
+            <Text>No comments yet.</Text>
           )}
 
-          {/* Add Comment Section */}
           <View style={styles.addCommentSection}>
             <TextInput
               value={commentText}
@@ -126,6 +125,7 @@ const CommentModal: React.FC<CommentModalProps> = ({
               <AddIcon height={24} width={24} />
             </TouchableOpacity>
           </View>
+
           {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
         </View>
       </View>
