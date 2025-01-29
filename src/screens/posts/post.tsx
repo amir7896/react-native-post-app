@@ -17,7 +17,7 @@ import {
   AddPostIcon,
 } from '../../assets/svgs';
 import CommentModal from './CommentModal';
-
+import CreatePostModal from './PostModal'; // ✅ Import CreatePostModal
 import styles from './style';
 
 type Post = {
@@ -41,6 +41,7 @@ const Posts: React.FC = () => {
     null,
   );
   const [hasMorePosts, setHasMorePosts] = useState(true); // ✅ Track if more posts exist
+  const [isCreatePostVisible, setIsCreatePostVisible] = useState(false); // ✅ Track modal visibility
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,6 +67,25 @@ const Posts: React.FC = () => {
 
   const handleHideComments = () => {
     setShowCommentsPostId(null);
+  };
+
+  // ✅ Handle opening the create post modal
+  const openCreatePostModal = () => {
+    setIsCreatePostVisible(true);
+  };
+
+  // ✅ Handle closing the create post modal
+  const closeCreatePostModal = () => {
+    setIsCreatePostVisible(false);
+  };
+
+  // ✅ Handle post submission (send data to API)
+  const handleCreatePost = async (formData: FormData) => {
+    try {
+      console.log('Post body:', formData);
+    } catch (error) {
+      console.error('Error creating post:', error);
+    }
   };
 
   const renderItem = ({item}: {item: Post}) => (
@@ -95,19 +115,20 @@ const Posts: React.FC = () => {
 
   const loadMorePosts = () => {
     if (!isLoading && hasMorePosts) {
-      // ✅ Prevent loading if no more posts
       setStart(prevStart => prevStart + 5);
     }
   };
 
   return (
     <>
+      {/* ✅ Add Post Button */}
       <View style={styles.addPostContainer}>
-        <TouchableOpacity onPress={() => console.log('Add post icon pressed!')}>
+        <TouchableOpacity onPress={openCreatePostModal}>
           <AddPostIcon height={30} width={30} />
         </TouchableOpacity>
       </View>
 
+      {/* ✅ Render Post List */}
       <FlatList
         data={posts}
         renderItem={renderItem}
@@ -124,6 +145,7 @@ const Posts: React.FC = () => {
         }
       />
 
+      {/* ✅ Comment Modal */}
       {showCommentsPostId && (
         <CommentModal
           isVisible={!!showCommentsPostId}
@@ -131,6 +153,13 @@ const Posts: React.FC = () => {
           onClose={handleHideComments}
         />
       )}
+
+      {/* ✅ Create Post Modal */}
+      <CreatePostModal
+        isVisible={isCreatePostVisible}
+        onClose={closeCreatePostModal}
+        onSubmitPost={handleCreatePost}
+      />
     </>
   );
 };
