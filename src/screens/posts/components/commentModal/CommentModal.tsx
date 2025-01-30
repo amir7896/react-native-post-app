@@ -10,11 +10,14 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {fetchCommentsForPost, addComment} from '../../features/Post/PostSlice';
-import {CancelIcon, AddIcon} from '../../assets/svgs';
-import type {RootState, AppDispatch} from '../../app/store';
+import {
+  fetchCommentsForPost,
+  addComment,
+} from '../../../../features/Post/PostSlice';
+import {CancelIcon, AddIcon} from '../../../../assets/svgs';
+import type {RootState, AppDispatch} from '../../../../app/store';
 
-import styles from './style';
+import styles from './styles';
 
 type CommentModalProps = {
   isVisible: boolean;

@@ -16,8 +16,8 @@ import {
   LikeFilledIcons,
   AddPostIcon,
 } from '../../assets/svgs';
-import CommentModal from './CommentModal';
-import CreatePostModal from './PostModal'; // ✅ Import CreatePostModal
+import CommentModal from './components/commentModal/CommentModal';
+import CreatePostModal from './components/postModal/PostModal';
 import styles from './style';
 
 type Post = {
@@ -40,15 +40,15 @@ const Posts: React.FC = () => {
   const [showCommentsPostId, setShowCommentsPostId] = useState<string | null>(
     null,
   );
-  const [hasMorePosts, setHasMorePosts] = useState(true); // ✅ Track if more posts exist
-  const [isCreatePostVisible, setIsCreatePostVisible] = useState(false); // ✅ Track modal visibility
+  const [hasMorePosts, setHasMorePosts] = useState(true);
+  const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await dispatch(fetchPosts({start, limit: 5})).unwrap();
 
       if (result.length < 5) {
-        setHasMorePosts(false); // ✅ No more posts available
+        setHasMorePosts(false);
       }
     };
 
@@ -69,17 +69,14 @@ const Posts: React.FC = () => {
     setShowCommentsPostId(null);
   };
 
-  // ✅ Handle opening the create post modal
   const openCreatePostModal = () => {
     setIsCreatePostVisible(true);
   };
 
-  // ✅ Handle closing the create post modal
   const closeCreatePostModal = () => {
     setIsCreatePostVisible(false);
   };
 
-  // ✅ Handle post submission (send data to API)
   const handleCreatePost = async (formData: FormData) => {
     try {
       console.log('Post body:', formData);
@@ -121,14 +118,14 @@ const Posts: React.FC = () => {
 
   return (
     <>
-      {/* ✅ Add Post Button */}
+      {/* Add Post Button */}
       <View style={styles.addPostContainer}>
         <TouchableOpacity onPress={openCreatePostModal}>
           <AddPostIcon height={30} width={30} />
         </TouchableOpacity>
       </View>
 
-      {/* ✅ Render Post List */}
+      {/*  Render Post List */}
       <FlatList
         data={posts}
         renderItem={renderItem}
@@ -145,7 +142,7 @@ const Posts: React.FC = () => {
         }
       />
 
-      {/* ✅ Comment Modal */}
+      {/* Comment Modal */}
       {showCommentsPostId && (
         <CommentModal
           isVisible={!!showCommentsPostId}
@@ -154,7 +151,7 @@ const Posts: React.FC = () => {
         />
       )}
 
-      {/* ✅ Create Post Modal */}
+      {/* Create Post Modal */}
       <CreatePostModal
         isVisible={isCreatePostVisible}
         onClose={closeCreatePostModal}

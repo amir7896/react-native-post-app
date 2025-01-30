@@ -13,6 +13,8 @@ interface CustomInputProps {
   rules?: RegisterOptions;
   placeholder?: string;
   secureTextEntry?: boolean;
+  multiline?: boolean;
+  numberOfLines?: number;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -21,6 +23,8 @@ const CustomInput: React.FC<CustomInputProps> = ({
   rules = {},
   placeholder,
   secureTextEntry,
+  multiline = false,
+  numberOfLines = 4,
 }) => {
   return (
     <Controller
@@ -32,6 +36,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
           <View
             style={[
               styles.container,
+              multiline && styles.multilineContainer,
               {borderColor: error ? 'red' : '#e8e8e8'},
             ]}>
             <TextInput
@@ -39,8 +44,11 @@ const CustomInput: React.FC<CustomInputProps> = ({
               onChangeText={onChange}
               onBlur={onBlur}
               placeholder={placeholder}
-              style={styles.input}
+              style={[styles.input, multiline && styles.multilineInput]}
               secureTextEntry={secureTextEntry}
+              multiline={multiline}
+              numberOfLines={multiline ? numberOfLines : 1}
+              textAlignVertical={multiline ? 'top' : 'center'}
             />
           </View>
           {error && (
@@ -66,5 +74,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginVertical: 5,
   },
-  input: {},
+
+  input: {
+    height: 40,
+  },
+
+  // Styles for Multiline Input
+  multilineContainer: {
+    minHeight: 100,
+    paddingVertical: 10,
+  },
+
+  multilineInput: {
+    height: 100,
+    textAlignVertical: 'top',
+  },
 });
