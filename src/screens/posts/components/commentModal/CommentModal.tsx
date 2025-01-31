@@ -36,7 +36,7 @@ const CommentModal: React.FC<CommentModalProps> = ({
   const [commentText, setCommentText] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasFetched, setHasFetched] = useState(false); // New state to track first fetch
+  const [hasFetched, setHasFetched] = useState(false); // New state to track first fetch ..
 
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -56,7 +56,7 @@ const CommentModal: React.FC<CommentModalProps> = ({
 
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) {
-      setErrorMessage('Comment cannot be empty');
+      setErrorMessage('Comment input cannot be empty');
       return;
     }
 
