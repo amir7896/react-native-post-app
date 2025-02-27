@@ -14,6 +14,7 @@ import FileUploader from '../../../../components/FileUploader/FileUploader';
 import styles from './styles';
 import {Asset} from 'react-native-image-picker';
 
+// Type of props 
 type CreatePostModalProps = {
   isVisible: boolean;
   onClose: () => void;
