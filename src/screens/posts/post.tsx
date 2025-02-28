@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {fetchPosts, likePost} from '../../features/Post/PostSlice';
+import {fetchPosts, likePost, createPost} from '../../features/Post/PostSlice';
 import type {RootState, AppDispatch} from '../../app/store';
 import {
   LikeIcon,
@@ -16,8 +16,8 @@ import {
   LikeFilledIcons,
   AddPostIcon,
 } from '../../assets/svgs';
-import CommentModal from './CommentModal';
-
+import CommentModal from './components/commentModal/CommentModal';
+import CreatePostModal from './components/postModal/PostModal';
 import styles from './style';
 
 type Post = {
@@ -40,14 +40,15 @@ const Posts: React.FC = () => {
   const [showCommentsPostId, setShowCommentsPostId] = useState<string | null>(
     null,
   );
-  const [hasMorePosts, setHasMorePosts] = useState(true); // ✅ Track if more posts exist
+  const [hasMorePosts, setHasMorePosts] = useState(true);
+  const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await dispatch(fetchPosts({start, limit: 5})).unwrap();
 
       if (result.length < 5) {
-        setHasMorePosts(false); // ✅ No more posts available
+        setHasMorePosts(false);
       }
     };
 
@@ -66,6 +67,27 @@ const Posts: React.FC = () => {
 
   const handleHideComments = () => {
     setShowCommentsPostId(null);
+  };
+
+  const openCreatePostModal = () => {
+    setIsCreatePostVisible(true);
+  };
+
+  const closeCreatePostModal = () => {
+    setIsCreatePostVisible(false);
+  };
+
+  const handleCreatePost = async (formData: FormData) => {
+    try {
+      const resultAction = await dispatch(createPost(formData)).unwrap();
+
+      console.log('Post created successfully:', resultAction);
+
+      // Close the modal after successful post creation
+      closeCreatePostModal();
+    } catch (error) {
+      console.error('Error creating post:', error);
+    }
   };
 
   const renderItem = ({item}: {item: Post}) => (
@@ -95,19 +117,20 @@ const Posts: React.FC = () => {
 
   const loadMorePosts = () => {
     if (!isLoading && hasMorePosts) {
-      // ✅ Prevent loading if no more posts
       setStart(prevStart => prevStart + 5);
     }
   };
 
   return (
     <>
+      {/* Add Post Button */}
       <View style={styles.addPostContainer}>
-        <TouchableOpacity onPress={() => console.log('Add post icon pressed!')}>
+        <TouchableOpacity onPress={openCreatePostModal}>
           <AddPostIcon height={30} width={30} />
         </TouchableOpacity>
       </View>
 
+      {/*  Render Post List */}
       <FlatList
         data={posts}
         renderItem={renderItem}
@@ -124,6 +147,7 @@ const Posts: React.FC = () => {
         }
       />
 
+      {/* Comment Modal */}
       {showCommentsPostId && (
         <CommentModal
           isVisible={!!showCommentsPostId}
@@ -131,6 +155,13 @@ const Posts: React.FC = () => {
           onClose={handleHideComments}
         />
       )}
+
+      {/* Create Post Modal */}
+      <CreatePostModal
+        isVisible={isCreatePostVisible}
+        onClose={closeCreatePostModal}
+        onSubmitPost={handleCreatePost}
+      />
     </>
   );
 };

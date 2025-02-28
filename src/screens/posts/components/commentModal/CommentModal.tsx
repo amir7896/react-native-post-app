@@ -10,11 +10,14 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {fetchCommentsForPost, addComment} from '../../features/Post/PostSlice';
-import {CancelIcon, AddIcon} from '../../assets/svgs';
-import type {RootState, AppDispatch} from '../../app/store';
+import {
+  fetchCommentsForPost,
+  addComment,
+} from '../../../../features/Post/PostSlice';
+import {CancelIcon, AddIcon} from '../../../../assets/svgs';
+import type {RootState, AppDispatch} from '../../../../app/store';
 
-import styles from './style';
+import styles from './styles';
 
 type CommentModalProps = {
   isVisible: boolean;
@@ -33,7 +36,7 @@ const CommentModal: React.FC<CommentModalProps> = ({
   const [commentText, setCommentText] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasFetched, setHasFetched] = useState(false); // New state to track first fetch
+  const [hasFetched, setHasFetched] = useState(false); // New state to track first fetch ..
 
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -53,7 +56,7 @@ const CommentModal: React.FC<CommentModalProps> = ({
 
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) {
-      setErrorMessage('Comment cannot be empty');
+      setErrorMessage('Comment input cannot be empty');
       return;
     }
 

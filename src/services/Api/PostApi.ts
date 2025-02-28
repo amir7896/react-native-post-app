@@ -5,6 +5,7 @@ import {
   LIKE_POST,
   COMMENT_ON_POST,
   GET_ALL_COMMENTS_FOR_POST,
+  CREATE_POST
 } from '../../constants/apiConstant';
 
 interface Post {
@@ -66,9 +67,7 @@ class PostApi {
   }
 
   // Like or unlike a post
-  async likePost(
-    postId: string,
-  ): Promise<{
+  async likePost(postId: string): Promise<{
     success: boolean;
     message: string;
     likesCount: number;
@@ -127,6 +126,29 @@ class PostApi {
         success: false,
         postId,
         comments: [],
+      };
+    }
+  }
+
+  // Create a new post
+  async createPost(formData: FormData): Promise<ApiResponse<Post>> {
+    try {
+      const response: AxiosResponse<ApiResponse<Post>> = await Api.post(
+        CREATE_POST, // Make sure this matches your backend route
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+      return response.data;
+    } catch (error: any) {
+      console.error('Error creating post:', error);
+      return {
+        success: false,
+        message: 'Failed to create post',
+        error: error.message,
       };
     }
   }

@@ -3,7 +3,7 @@
 import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
-  // Container style
+  // Render post container style
   container: {
     paddingHorizontal: 24,
     paddingVertical: 32,
@@ -79,125 +79,7 @@ export default StyleSheet.create({
     borderColor: '#BCC0C0',
   },
 
-  // Comment button text
-  commentButtonText: {
-    color: '#4C4F56',
-    fontWeight: '600',
-    fontSize: 14,
-    marginLeft: 6,
-  },
-
-  // Other styles remain unchanged
-  commentList: {
-    marginVertical: 8,
-  },
-
-  commentItem: {
-    backgroundColor: '#f9f9f9',
-    padding: 8,
-    borderRadius: 4,
-    marginVertical: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-
-  commentUserName: {
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-
-  commentContent: {
-    fontSize: 14,
-    marginLeft: 4,
-  },
-
-  addCommentSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-    paddingTop: 12,
-  },
-
-  commentInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    marginRight: 8,
-    backgroundColor: '#f8f8f8',
-  },
-
-  addCommentButtonText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-
-  modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  modalContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '90%',
-    maxHeight: '80%',
-  },
-
-  scrollableCommentList: {
-    maxHeight: '80%',
-    marginBottom: 16,
-  },
-
-  modalTitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#007bff',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-
-  cancelIconContainer: {
-    paddingTop: 5,
-  },
-
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-
-  closeModalButton: {
-    marginTop: 16,
-    alignSelf: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#007bff',
-    borderRadius: 6,
-  },
-
-  closeModalButtonText: {
-    color: 'white',
-    fontWeight: '600',
-  },
-
-  errorText: {
-    color: 'red',
-    marginBottom: 8,
-  },
-
+  // Add post container
   addPostContainer: {
     justifyContent: 'flex-end',
     alignItems: 'flex-end',

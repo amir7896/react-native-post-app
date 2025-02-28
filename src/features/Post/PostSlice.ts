@@ -42,6 +42,25 @@ const initialState: PostState = {
   isLikedByUser: false,
 };
 
+// Thunk to create a new post
+export const createPost = createAsyncThunk(
+  'post/createPost',
+  async (formData: FormData, thunkAPI) => {
+    try {
+      const response = await PostApi.createPost(formData);
+      if (response.success) {
+        // Fetch all posts after successful creation
+        await thunkAPI.dispatch(fetchPosts({start: 0, limit: 5}));
+        return response.data;
+      } else {
+        return thunkAPI.rejectWithValue(response.message);
+      }
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message || 'Failed to create post');
+    }
+  },
+);
+
 // Thunk to fetch all posts
 export const fetchPosts = createAsyncThunk(
   'post/fetchPosts',
@@ -205,6 +224,19 @@ const postSlice = createSlice({
         state.isError = true;
         state.message =
           (action.payload as string) || 'Failed to fetch comments for post';
+      })
+      .addCase(createPost.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(createPost.fulfilled, state => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = 'Post created successfully';
+      })
+      .addCase(createPost.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = (action.payload as string) || 'Failed to create post';
       });
   },
 });
