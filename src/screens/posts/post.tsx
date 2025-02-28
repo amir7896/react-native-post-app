@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {fetchPosts, likePost} from '../../features/Post/PostSlice';
+import {fetchPosts, likePost, createPost} from '../../features/Post/PostSlice';
 import type {RootState, AppDispatch} from '../../app/store';
 import {
   LikeIcon,
@@ -79,7 +79,12 @@ const Posts: React.FC = () => {
 
   const handleCreatePost = async (formData: FormData) => {
     try {
-      console.log('Post body:', formData);
+      const resultAction = await dispatch(createPost(formData)).unwrap();
+
+      console.log('Post created successfully:', resultAction);
+
+      // Close the modal after successful post creation
+      closeCreatePostModal();
     } catch (error) {
       console.error('Error creating post:', error);
     }
