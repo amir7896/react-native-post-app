@@ -14,7 +14,7 @@ import FileUploader from '../../../../components/FileUploader/FileUploader';
 import styles from './styles';
 import {Asset} from 'react-native-image-picker';
 
-// Type of props 
+// Type of props
 type CreatePostModalProps = {
   isVisible: boolean;
   onClose: () => void;
@@ -35,9 +35,16 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     control,
     handleSubmit,
     formState: {},
+    reset,
   } = useForm<FormDataType>();
   const [mediaFiles, setMediaFiles] = useState<Asset[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+
+  // Function to clear the form and media files
+  const clearForm = () => {
+    reset(); // Reset react-hook-form fields
+    setMediaFiles([]); // Clear media files state
+  };
 
   // Handle post submission
   const onSubmit = async (data: FormDataType) => {
@@ -64,12 +71,18 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     try {
       await onSubmitPost(formData);
       setMediaFiles([]); // Clear selected media
+      clearForm(); // Clear form on successful submission
       onClose();
     } catch (error) {
       Alert.alert('Error', 'Failed to create post');
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleCloseModal = () => {
+    clearForm(); // Clear form when modal is closed
+    onClose(); // Call the original onClose prop to close the modal
   };
 
   return (
@@ -79,7 +92,9 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
           {/* Header with Close Button */}
           <View style={styles.header}>
             <Text style={styles.modalTitle}>Create a Post</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <TouchableOpacity
+              onPress={handleCloseModal}
+              style={styles.closeButton}>
               <Text style={styles.closeButtonText}>✕</Text>
             </TouchableOpacity>
           </View>
@@ -90,7 +105,13 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             <CustomInput
               control={control as unknown as Control<FieldValues, object>}
               name="title"
-              rules={{required: 'Title is required'}}
+              rules={{
+                required: 'Title is required',
+                maxLength: {
+                  value: 30,
+                  message: 'Title should not exceed 30 characters',
+                },
+              }}
               placeholder="Enter title..."
             />
 
@@ -98,7 +119,13 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             <CustomInput
               control={control as unknown as Control<FieldValues, object>}
               name="content"
-              rules={{required: 'Content is required'}}
+              rules={{
+                required: 'Content is required',
+                maxLength: {
+                  value: 100,
+                  message: 'Content should not exceed 100 characters  ',
+                },
+              }}
               placeholder="Write something..."
               multiline
             />
