@@ -131,7 +131,10 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             />
 
             {/* File Uploader */}
+            <View style={styles.fileUploaderContainer}>
             <FileUploader onFilesSelected={setMediaFiles} />
+
+            </View>
           </ScrollView>
 
           {/* Submit Button */}
