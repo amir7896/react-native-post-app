@@ -86,4 +86,19 @@ export default StyleSheet.create({
     paddingTop: 15,
     paddingHorizontal: 25,
   },
+  // Comment button text
+
+  // Delete post button
+  deleteButton: {
+    flexDirection: 'row',
+    width: 100,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F0F2F5',
+    borderWidth: 1,
+    borderColor: '#BCC0C0',
+  },
 });

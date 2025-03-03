@@ -48,10 +48,14 @@ export const createPost = createAsyncThunk(
   async (formData: FormData, thunkAPI) => {
     try {
       const response = await PostApi.createPost(formData);
+      // Get the global state
+      const state: any = thunkAPI.getState();
+      const user = state.auth.user; // Access user from auth slice
+
       if (response.success) {
-        // Fetch all posts after successful creation
-        await thunkAPI.dispatch(fetchPosts({start: 0, limit: 5}));
-        return response.data;
+        // **No need to dispatch fetchPosts here anymore**
+        // await thunkAPI.dispatch(fetchPosts({start: 0, limit: 5}));
+        return {post: response.data, user}; // Return both post and user
       } else {
         return thunkAPI.rejectWithValue(response.message);
       }
@@ -67,7 +71,7 @@ export const fetchPosts = createAsyncThunk(
   async ({start, limit}: {start: number; limit: number}, thunkAPI) => {
     try {
       const response = await PostApi.getAllPosts(start, limit);
-      return response.data || [];
+      return {posts: response.data || [], start}; // **Return object with posts and start**
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message || 'Failed to fetch posts');
     }
@@ -118,6 +122,23 @@ export const fetchCommentsForPost = createAsyncThunk(
   },
 );
 
+export const deletePost = createAsyncThunk(
+  'post/deletePost',
+  async (postId: string, thunkAPI) => {
+    try {
+      const response = await PostApi.deletePost(postId);
+      if (response.success) {
+        // **No need to dispatch fetchPosts here anymore**
+        // await thunkAPI.dispatch(fetchPosts({start: 0, limit: 5}));
+        return postId; // Return the postId of the deleted post
+      }
+      return thunkAPI.rejectWithValue(response.message);
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message || 'Failed to delete post');
+    }
+  },
+);
+
 const postSlice = createSlice({
   name: 'post',
   initialState,
@@ -135,11 +156,28 @@ const postSlice = createSlice({
       .addCase(fetchPosts.pending, state => {
         state.isLoading = true;
       })
-      .addCase(fetchPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.posts = [...state.posts, ...action.payload];
-      })
+      .addCase(
+        fetchPosts.fulfilled,
+        (state, action: PayloadAction<{posts: Post[]; start: number}>) => {
+          // Payload is now an object
+          state.isLoading = false;
+          state.isSuccess = true;
+          const fetchedPosts = action.payload.posts;
+          const startValue = action.payload.start;
+
+          if (startValue === 0) {
+            // Initial load: Replace existing posts
+            state.posts = fetchedPosts;
+          } else {
+            // Pagination: Append new posts and filter duplicates
+            const existingPostIds = state.posts.map(post => post._id);
+            const newPosts = fetchedPosts.filter(
+              post => !existingPostIds.includes(post._id),
+            ); // Filter duplicates
+            state.posts = [...state.posts, ...newPosts]; // Append only unique new posts
+          }
+        },
+      )
       .addCase(fetchPosts.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
@@ -225,18 +263,39 @@ const postSlice = createSlice({
         state.message =
           (action.payload as string) || 'Failed to fetch comments for post';
       })
+
+      // Create post cases
       .addCase(createPost.pending, state => {
         state.isLoading = true;
       })
-      .addCase(createPost.fulfilled, state => {
+      .addCase(createPost.fulfilled, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.message = 'Post created successfully';
+        const {post, user} = action.payload; // Extract post and user from payload
+
+        state.posts = [{...post, user}, ...state.posts]; // Add new post with user at the front
       })
       .addCase(createPost.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = (action.payload as string) || 'Failed to create post';
+      })
+
+      // Delete post cases
+      .addCase(deletePost.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(deletePost.fulfilled, (state, action: PayloadAction<string>) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = 'Post deleted successfully';
+        state.posts = state.posts.filter(post => post._id !== action.payload);
+      })
+      .addCase(deletePost.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = (action.payload as string) || 'Failed to delete post';
       });
   },
 });

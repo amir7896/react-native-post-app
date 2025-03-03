@@ -69,6 +69,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
+  fileUploaderContainer: { // New style for FileUploader container
+    marginTop: 15,
+    borderWidth: 1,
+    borderColor: '#ccc', // Light gray border color, adjust to match CustomInput
+    borderRadius: 8,      // Rounded border corners, adjust to match CustomInput
+    padding: 10,          // Padding inside the FileUploader border
+  },
 });
 
 export default styles;
