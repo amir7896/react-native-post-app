@@ -8,16 +8,19 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {fetchPosts, likePost, createPost} from '../../features/Post/PostSlice';
+import {fetchPosts, likePost, createPost, deletePost} from '../../features/Post/PostSlice';
 import type {RootState, AppDispatch} from '../../app/store';
 import {
   LikeIcon,
   CommentIcon,
   LikeFilledIcons,
   AddPostIcon,
+  DeleteIcon,
 } from '../../assets/svgs';
 import CommentModal from './components/commentModal/CommentModal';
 import CreatePostModal from './components/postModal/PostModal';
+import DeleteModal from '../../components/DeleteModal/DeleteModal';
+
 import styles from './style';
 
 type Post = {
@@ -35,6 +38,9 @@ type Post = {
 const Posts: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const {posts, isLoading} = useSelector((state: RootState) => state.post);
+  const {user} = useSelector((state: RootState) => state.auth);
+
+  console.log('Logged in user:', user);
 
   const [start, setStart] = useState(0);
   const [showCommentsPostId, setShowCommentsPostId] = useState<string | null>(
@@ -42,11 +48,36 @@ const Posts: React.FC = () => {
   );
   const [hasMorePosts, setHasMorePosts] = useState(true);
   const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [postId, setPostId] = useState <any>(null);
+
+  // Show delete Modal
+  const handleShowDeleteModal = (id: string) => {
+    setShowDeleteModal(true);
+    setPostId(id);
+  };
+
+
+  const handleDelete = async () => {
+    try {
+      const resultAction = await dispatch(deletePost(postId)).unwrap();
+      console.log('Post deleted successfully response :', resultAction);
+      handleHideDeleteModal();
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+    }
+  };
+
+  // Hide delete Modal
+  const handleHideDeleteModal = () => {
+    setShowDeleteModal(false);
+    setPostId(null);
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await dispatch(fetchPosts({start, limit: 5})).unwrap();
-
       if (result.length < 5) {
         setHasMorePosts(false);
       }
@@ -77,6 +108,7 @@ const Posts: React.FC = () => {
     setIsCreatePostVisible(false);
   };
 
+  // Create post
   const handleCreatePost = async (formData: FormData) => {
     try {
       const resultAction = await dispatch(createPost(formData)).unwrap();
@@ -95,6 +127,7 @@ const Posts: React.FC = () => {
       <Text style={styles.postTitle}>{item.title}</Text>
       <Text style={styles.postBody}>{item.content}</Text>
       <View style={styles.likeCommentSection}>
+        {/* Like Button */}
         <TouchableOpacity
           style={styles.likeButton}
           onPress={() => handleLike(item._id)}>
@@ -105,7 +138,17 @@ const Posts: React.FC = () => {
           )}
           <Text style={styles.likeButtonText}>{item.likesCount}</Text>
         </TouchableOpacity>
+        {/* Delete Post Button */}
+        {/* Show to only those user which are the owner of the pist */}
+        {user?.userId === item.user.userId && (
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => handleShowDeleteModal(item._id)}>
+            <DeleteIcon width={16} height={16} fill="red" />
+          </TouchableOpacity>
+        )}
 
+        {/* Show comment button */}
         <TouchableOpacity
           style={styles.commentButton}
           onPress={() => handleShowComments(item._id)}>
@@ -161,6 +204,15 @@ const Posts: React.FC = () => {
         isVisible={isCreatePostVisible}
         onClose={closeCreatePostModal}
         onSubmitPost={handleCreatePost}
+      />
+
+      {/* Delete Post modal  */}
+      <DeleteModal
+        title="Delete Post"
+        content="Are you sure to delete this post?"
+        visible={showDeleteModal}
+        onCancel={handleHideDeleteModal}
+        onDelete={handleDelete}
       />
     </>
   );

@@ -5,7 +5,8 @@ import {
   LIKE_POST,
   COMMENT_ON_POST,
   GET_ALL_COMMENTS_FOR_POST,
-  CREATE_POST
+  CREATE_POST,
+  DELETE_POST,
 } from '../../constants/apiConstant';
 
 interface Post {
@@ -148,6 +149,23 @@ class PostApi {
       return {
         success: false,
         message: 'Failed to create post',
+        error: error.message,
+      };
+    }
+  }
+
+  // Delete post
+  async deletePost(postId: string): Promise<ApiResponse<Post>> {
+    try {
+      const response: AxiosResponse<ApiResponse<Post>> = await Api.delete(
+        `${DELETE_POST}/${postId}`,
+      );
+      return response.data;
+    } catch (error: any) {
+      console.log('Error in delete post in api call:', error);
+      return {
+        success: false,
+        message: 'Failed to delete post',
         error: error.message,
       };
     }
