@@ -8,7 +8,12 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {fetchPosts, likePost, createPost, deletePost} from '../../features/Post/PostSlice';
+import {
+  fetchPosts,
+  likePost,
+  createPost,
+  deletePost,
+} from '../../features/Post/PostSlice';
 import type {RootState, AppDispatch} from '../../app/store';
 import {
   LikeIcon,
@@ -40,8 +45,6 @@ const Posts: React.FC = () => {
   const {posts, isLoading} = useSelector((state: RootState) => state.post);
   const {user} = useSelector((state: RootState) => state.auth);
 
-  console.log('Logged in user:', user);
-
   const [start, setStart] = useState(0);
   const [showCommentsPostId, setShowCommentsPostId] = useState<string | null>(
     null,
@@ -49,14 +52,13 @@ const Posts: React.FC = () => {
   const [hasMorePosts, setHasMorePosts] = useState(true);
   const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [postId, setPostId] = useState <any>(null);
+  const [postId, setPostId] = useState<any>(null);
 
   // Show delete Modal
   const handleShowDeleteModal = (id: string) => {
     setShowDeleteModal(true);
     setPostId(id);
   };
-
 
   const handleDelete = async () => {
     try {
@@ -74,11 +76,10 @@ const Posts: React.FC = () => {
     setPostId(null);
   };
 
-
   useEffect(() => {
     const fetchData = async () => {
       const result = await dispatch(fetchPosts({start, limit: 5})).unwrap();
-      if (result.length < 5) {
+      if (result.posts.length < 5) {
         setHasMorePosts(false);
       }
     };
@@ -184,9 +185,7 @@ const Posts: React.FC = () => {
         ListFooterComponent={
           isLoading ? (
             <ActivityIndicator size="large" color="#bdbdbd" />
-          ) : !hasMorePosts && posts.length > 0 ? (
-            <Text>No more posts</Text>
-          ) : null
+          ) : !hasMorePosts && posts.length > 0 ? null : null
         }
       />
 

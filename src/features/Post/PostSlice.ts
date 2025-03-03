@@ -71,7 +71,7 @@ export const fetchPosts = createAsyncThunk(
   async ({start, limit}: {start: number; limit: number}, thunkAPI) => {
     try {
       const response = await PostApi.getAllPosts(start, limit);
-      return response.data || [];
+      return {posts: response.data || [], start}; // **Return object with posts and start**
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message || 'Failed to fetch posts');
     }
@@ -156,11 +156,28 @@ const postSlice = createSlice({
       .addCase(fetchPosts.pending, state => {
         state.isLoading = true;
       })
-      .addCase(fetchPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.posts = [...state.posts, ...action.payload];
-      })
+      .addCase(
+        fetchPosts.fulfilled,
+        (state, action: PayloadAction<{posts: Post[]; start: number}>) => {
+          // Payload is now an object
+          state.isLoading = false;
+          state.isSuccess = true;
+          const fetchedPosts = action.payload.posts;
+          const startValue = action.payload.start;
+
+          if (startValue === 0) {
+            // Initial load: Replace existing posts
+            state.posts = fetchedPosts;
+          } else {
+            // Pagination: Append new posts and filter duplicates
+            const existingPostIds = state.posts.map(post => post._id);
+            const newPosts = fetchedPosts.filter(
+              post => !existingPostIds.includes(post._id),
+            ); // Filter duplicates
+            state.posts = [...state.posts, ...newPosts]; // Append only unique new posts
+          }
+        },
+      )
       .addCase(fetchPosts.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
