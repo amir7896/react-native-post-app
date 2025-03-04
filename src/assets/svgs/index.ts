@@ -14,3 +14,4 @@ export {default as CameraIcon} from './camera.svg';
 export {default as DeleteIcon} from './delete.svg';
 export {default as PlayIcon} from './playicon.svg';
 export {default as PauseIcon} from './pauseicon.svg';
+export {default as ProfileIcon} from './profile-avatar.svg';

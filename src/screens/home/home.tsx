@@ -7,7 +7,7 @@ import {logout} from '../../features/User/UserSlice';
 const Home: React.FC = () => {
   const [user, setUser] = useState<{
     userId: string;
-    username: string;
+    userName: string;
     email: string;
   } | null>(null);
   const dispatch = useDispatch();
@@ -44,7 +44,7 @@ const Home: React.FC = () => {
     <View style={styles.container}>
       {user ? (
         <>
-          <Text style={styles.infoText}>Username: {user.username}</Text>
+          <Text style={styles.infoText}>Username: {user.userName}</Text>
           <Text style={styles.infoText}>Email: {user.email}</Text>
           <Text style={styles.infoText}>User ID: {user.userId}</Text>
         </>

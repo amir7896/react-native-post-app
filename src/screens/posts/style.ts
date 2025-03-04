@@ -23,6 +23,54 @@ export default StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  // Top Section Style (Profile + User Info)
+  topSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  // User Profile Card style
+  userProfileCard: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#e0e0e0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    overflow: 'hidden',
+    marginRight: 10,
+  },
+  userProfileName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+
+  // User Info Style (Username and Date - Vertical Layout)
+  userInfo: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+
+  userProfileImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 25,
+  },
+  // Username Style (next to profile circle)
+  userName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 2,
+  },
+  // Post Date Style (below username)
+  postDate: {
+    fontSize: 14,
+    color: '#777',
+  },
   // Post title style
   postTitle: {
     fontSize: 20,
