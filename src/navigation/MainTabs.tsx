@@ -2,17 +2,22 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/home/home';
 import PostScreen from '../screens/posts/post';
+import ProfileScreen from '../screens/profile/profile';
+
 import {
-  HomeOutLined,
-  HomeFilled,
-  PostOutLined,
-  PostFilled,
+  Home6Filled,
+  Home6Outline,
+  PostFilled1,
+  PostOutLined1,
+  User3Filled,
+  User3Outline,
 } from '../assets/svgs';
 import {Text, StyleSheet} from 'react-native';
 
 type AppTabsParamList = {
   Home: undefined;
   Post: undefined;
+  Profile: undefined;
 };
 
 const AppTabs = createBottomTabNavigator<AppTabsParamList>();
@@ -28,9 +33,9 @@ const TabIcon = ({
   OutlinedIcon: React.ComponentType<any>;
 }) =>
   focused ? (
-    <FilledIcon height={20} width={20} />
+    <FilledIcon height={25} width={25} />
   ) : (
-    <OutlinedIcon height={20} width={20} />
+    <OutlinedIcon height={25} width={25} />
   );
 
 // TabLabel Component
@@ -45,8 +50,8 @@ const HomeTabOptions = {
   tabBarIcon: ({focused}: {focused: boolean}) => (
     <TabIcon
       focused={focused}
-      FilledIcon={HomeFilled}
-      OutlinedIcon={HomeOutLined}
+      FilledIcon={Home6Filled}
+      OutlinedIcon={Home6Outline}
     />
   ),
   tabBarLabel: ({focused}: {focused: boolean}) => (
@@ -59,13 +64,28 @@ const PostTabOptions = {
   tabBarIcon: ({focused}: {focused: boolean}) => (
     <TabIcon
       focused={focused}
-      FilledIcon={PostFilled}
-      OutlinedIcon={PostOutLined}
+      FilledIcon={PostFilled1}
+      OutlinedIcon={PostOutLined1}
     />
   ),
   tabBarLabel: ({focused}: {focused: boolean}) => (
     <TabLabel focused={focused} label="Post" />
   ),
+};
+
+// Icon and Label Config for Profile Tab
+const ProfileTabOptions = {
+  tabBarIcon: ({focused}: {focused: boolean}) => (
+    <TabIcon
+      focused={focused}
+      FilledIcon={User3Filled}
+      OutlinedIcon={User3Outline}
+    />
+  ),
+  tabBarLabel: ({focused}: {focused: boolean}) => (
+    <TabLabel focused={focused} label="Profile" />
+  ),
+  headerShown: false, // Hide the top header
 };
 
 const MainTabs = () => (
@@ -79,6 +99,11 @@ const MainTabs = () => (
       name="Post"
       component={PostScreen}
       options={PostTabOptions}
+    />
+    <AppTabs.Screen
+      name="Profile"
+      component={ProfileScreen}
+      options={ProfileTabOptions}
     />
   </AppTabs.Navigator>
 );
