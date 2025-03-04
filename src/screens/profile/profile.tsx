@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,9 @@ import {Control, FieldValues, useForm} from 'react-hook-form';
 import LinearGradient from 'react-native-linear-gradient';
 import CustomInput from '../../components/CustomInput/customInput';
 import {CameraIcon} from '../../assets/svgs';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchUserProfile, logout} from '../../features/User/UserSlice';
+import {RootState, AppDispatch} from '../../app/store';
 
 interface FormData {
   oldPassword: string;
@@ -27,6 +30,14 @@ interface FormData {
 const ProfileScreen = () => {
   const [profileImage, setProfileImage] = useState<Asset | null>(null);
   const [fadeAnim] = useState(new Animated.Value(0)); // Animation for smooth effect
+  const dispatch = useDispatch<AppDispatch>();
+  const {user} = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
+
+  console.log('User Profile :', user);
 
   const {
     control,
@@ -80,6 +91,23 @@ const ProfileScreen = () => {
     );
   };
 
+  // Handle Logout
+  const handleLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Logout',
+        onPress: () => {
+          dispatch(logout());
+        },
+        style: 'destructive',
+      },
+    ]);
+  };
+
   // Smooth fade-in effect on mount
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -96,18 +124,30 @@ const ProfileScreen = () => {
         <View style={styles.avatarContainer}>
           <Image
             source={
-              profileImage
+              user?.image?.secureUrl
+                ? {uri: user.image.secureUrl}
+                : profileImage
                 ? {uri: profileImage.uri}
                 : require('../../assets/images/default-profile.png')
             }
             style={styles.profileImage}
           />
+
           <TouchableOpacity style={styles.editIcon} onPress={pickImage}>
             <CameraIcon height={20} width={20} fill="#fff" />
           </TouchableOpacity>
         </View>
-        <Text style={styles.name}>Amir Shahzad</Text>
-        <Text style={styles.email}>amir@email.com</Text>
+        <Text style={styles.name}>{user?.userName}</Text>
+        <Text style={styles.email}>{user?.email}</Text>
+
+        {/* Logout Button */}
+        <TouchableOpacity onPress={handleLogout} activeOpacity={0.8}>
+          <LinearGradient
+            colors={['#FF4B2B', '#FF416C']}
+            style={styles.logoutButton}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </LinearGradient>
+        </TouchableOpacity>
       </Animated.View>
 
       {/* Password Change Form */}
@@ -195,6 +235,22 @@ const styles = StyleSheet.create({
   email: {
     fontSize: 15,
     color: 'gray',
+    marginBottom: 15,
+  },
+  logoutButton: {
+    marginTop: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+  logoutText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   form: {
     backgroundColor: 'white',
@@ -210,11 +266,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
     color: '#333',
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 12,
-    marginBottom: 10,
   },
   submitButton: {
     marginTop: 15,
