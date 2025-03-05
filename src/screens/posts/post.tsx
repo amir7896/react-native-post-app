@@ -8,6 +8,8 @@ import {
   Image, // Import Image component
   Dimensions, // Import Dimensions
 } from 'react-native';
+import {useNavigation, NavigationProp} from '@react-navigation/native'; // Import NavigationProp
+
 import {useDispatch, useSelector} from 'react-redux';
 import {formatDistanceToNowStrict} from 'date-fns';
 import Video from 'react-native-video'; // Import react-native-video
@@ -19,6 +21,7 @@ import {
   deletePost,
 } from '../../features/Post/PostSlice';
 import type {RootState, AppDispatch} from '../../app/store';
+import type {AppTabsParamList} from '../../navigation/MainTabs'; // Import the type
 import {
   LikeIcon,
   CommentIcon,
@@ -48,6 +51,8 @@ const Posts: React.FC = () => {
   const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [postId, setPostId] = useState<any>(null);
+
+  const navigation = useNavigation<NavigationProp<AppTabsParamList>>(); // Use the type
 
   // Show delete Modal
   const handleShowDeleteModal = (id: string) => {
@@ -165,7 +170,9 @@ const Posts: React.FC = () => {
     const displayDate = `${value}${abbreviatedUnit}`;
 
     return (
-      <View style={styles.card}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => navigation.navigate('PostDetail', {post: item,  user: user})}>
         {/* Top Section - Profile, Username, Date */}
         <View style={styles.topSection}>
           {/* User Profile Card */}
@@ -258,7 +265,7 @@ const Posts: React.FC = () => {
             </TouchableOpacity>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 

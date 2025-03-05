@@ -1,8 +1,11 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack'; // Import Stack Navigator
+
 import HomeScreen from '../screens/home/home';
 import PostScreen from '../screens/posts/post';
 import ProfileScreen from '../screens/profile/profile';
+import PostDetail from '../screens/postDetail/postDetail'; // Import PostDetail
 
 import {
   Home6Filled,
@@ -14,11 +17,37 @@ import {
 } from '../assets/svgs';
 import {Text, StyleSheet} from 'react-native';
 
+const Stack = createNativeStackNavigator(); // Create Stack Navigator
+
+// Define the type for your post object
+type Post = {
+  _id: string;
+  user: {
+    userId: string;
+    userName: string;
+    profileImage: string;
+  };
+  title: string;
+  content: string;
+  media: {
+    publicId: string;
+    secureUrl: string;
+    mediaType: 'image' | 'video';
+    _id: string;
+  };
+  createdAt: string;
+  likesCount: number;
+  isLikedByUser: boolean;
+};
+
 type AppTabsParamList = {
   Home: undefined;
   Post: undefined;
   Profile: undefined;
+  PostDetail: {post: Post, user: any}; // Define the post parameter type here
 };
+
+export type {AppTabsParamList}; // Export the type
 
 const AppTabs = createBottomTabNavigator<AppTabsParamList>();
 
@@ -88,7 +117,7 @@ const ProfileTabOptions = {
   headerShown: false, // Hide the top header
 };
 
-const MainTabs = () => (
+const Tabs = () => (
   <AppTabs.Navigator>
     <AppTabs.Screen
       name="Home"
@@ -106,6 +135,17 @@ const MainTabs = () => (
       options={ProfileTabOptions}
     />
   </AppTabs.Navigator>
+);
+
+const MainTabs = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Tabs" component={Tabs} options={{headerShown: false}} />
+    <Stack.Screen
+      name="PostDetail"
+      component={PostDetail}
+       options={{headerShown: false}}
+    />
+  </Stack.Navigator>
 );
 
 const styles = StyleSheet.create({
