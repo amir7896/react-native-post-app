@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -14,12 +14,20 @@ import {
   launchImageLibrary,
   Asset,
 } from 'react-native-image-picker';
+import * as Progress from 'react-native-progress'; // Import progress bar
+
 import {Control, FieldValues, useForm} from 'react-hook-form';
 import LinearGradient from 'react-native-linear-gradient';
 import CustomInput from '../../components/CustomInput/customInput';
+import CustomAlert from '../../components/CustomAlert/CustomAlert';
+
 import {CameraIcon} from '../../assets/svgs';
 import {useDispatch, useSelector} from 'react-redux';
-import {fetchUserProfile, logout} from '../../features/User/UserSlice';
+import {
+  fetchUserProfile,
+  logout,
+  updateProfileImage,
+} from '../../features/User/UserSlice';
 import {RootState, AppDispatch} from '../../app/store';
 
 interface FormData {
@@ -30,14 +38,83 @@ interface FormData {
 const ProfileScreen = () => {
   const [profileImage, setProfileImage] = useState<Asset | null>(null);
   const [fadeAnim] = useState(new Animated.Value(0)); // Animation for smooth effect
+  const [uploadProgress, setUploadProgress] = useState(0); // Add progress state
+  const [uploading, setUploading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const {user} = useSelector((state: RootState) => state.auth);
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState<'success' | 'error' | 'info'>(
+    'info',
+  );
+
+  const showAlert = (
+    title: string,
+    message: string,
+    type: 'success' | 'error' | 'info',
+  ) => {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertType(type);
+    setAlertVisible(true);
+  };
+
+  const hideAlert = () => {
+    setAlertVisible(false);
+  };
 
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
 
   console.log('User Profile :', user);
+
+  // Change Profile Image
+  const uploadImage = useCallback(
+    async (imageAsset: Asset) => {
+      setUploading(true);
+      setUploadProgress(0); // Reset progress
+
+      const formData = new FormData();
+      formData.append('profileImage', {
+        uri: imageAsset.uri,
+        type: imageAsset.type,
+        name: imageAsset.fileName || 'profile.jpg',
+      } as any);
+
+      try {
+        // Simulate upload progress (replace with actual upload logic)
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 0.1;
+          setUploadProgress(Math.min(progress, 1)); // Corrected progress update
+          if (progress >= 1) {
+            clearInterval(interval);
+          }
+        }, 300);
+
+        await dispatch(updateProfileImage(formData)).unwrap();
+        clearInterval(interval);
+        setUploadProgress(1); // Ensure progress is 100% after API call
+        showAlert('Success', 'Profile image updated successfully.', 'success');
+        setUploading(false);
+
+      } catch (error) {
+        setUploadProgress(0); // Reset progress on error
+        showAlert('Error', 'Failed to update profile image.', 'error');
+        setUploading(false);
+      }
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    if (profileImage) {
+      uploadImage(profileImage);
+    }
+  }, [profileImage, uploadImage]);
 
   const {
     control,
@@ -85,9 +162,10 @@ const ProfileScreen = () => {
 
   // Handle form submission
   const onSubmit = (data: FormData) => {
-    Alert.alert(
+    showAlert(
       'Password Updated',
       `Old: ${data.oldPassword}\nNew: ${data.newPassword}`,
+      'info',
     );
   };
 
@@ -140,6 +218,16 @@ const ProfileScreen = () => {
         <Text style={styles.name}>{user?.userName}</Text>
         <Text style={styles.email}>{user?.email}</Text>
 
+        {/* Uploading image  */}
+        {uploading && (
+          <View style={styles.uploadingIndicator}>
+            <Progress.Bar progress={uploadProgress} width={200} />
+            <Text style={styles.uploadingText}>
+              {Math.round(uploadProgress * 100)}% Uploaded
+            </Text>
+          </View>
+        )}
+
         {/* Logout Button */}
         <TouchableOpacity onPress={handleLogout} activeOpacity={0.8}>
           <LinearGradient
@@ -184,6 +272,14 @@ const ProfileScreen = () => {
           </LinearGradient>
         </TouchableOpacity>
       </View>
+      {/* Custom Alert  */}
+      <CustomAlert
+        isVisible={alertVisible}
+        title={alertTitle}
+        message={alertMessage}
+        onClose={hideAlert}
+        type={alertType}
+      />
     </ScrollView>
   );
 };
@@ -280,6 +376,16 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+
+  uploadingIndicator: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  uploadingText: {
+    marginTop: 5,
+    fontSize: 16,
+    color: 'gray',
   },
 });
 

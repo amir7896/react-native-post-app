@@ -99,16 +99,34 @@ export const fetchUserProfile = createAsyncThunk(
           response.message || 'Failed to fetch profile',
         );
       }
-
-      return response.data; // Returning response.data instead of response.user
+      return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
         error.message || 'Failed to fetch profile',
       );
     }
-  }
+  },
 );
 
+// Change User Profile Image
+export const updateProfileImage = createAsyncThunk(
+  'user/updateProfileImage',
+  async (formData: FormData, thunkAPI) => {
+    try {
+      const response = await AuthApi.changeProfileImage(formData);
+      if (!response.success) {
+        return thunkAPI.rejectWithValue(
+          response.message || 'Failed to update profile image',
+        );
+      }
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.message || 'Failed to update profile image ',
+      );
+    }
+  },
+);
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -194,6 +212,28 @@ export const authSlice = createSlice({
           state.isLoading = false;
           state.isError = true;
           state.message = action.payload;
+        },
+      )
+
+      // Update profile image case
+      .addCase(updateProfileImage.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(
+        updateProfileImage.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.user = action.payload;
+        },
+      )
+      .addCase(
+        updateProfileImage.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.message =
+            (action.payload as string) || 'Failed to update profile image';
         },
       );
   },

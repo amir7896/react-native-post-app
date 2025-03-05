@@ -1,6 +1,8 @@
 export const SIGNUP_USER = 'auth/register';
 export const SIGN_IN_USER = 'auth/login';
 export const GET_PROFILE = 'auth/profile';
+export const CHANGE_PROFILE_IMAGE = 'auth/profile/upload';
+export const CHANGE_PASSWORD = 'auth/password/change';
 
 // Posts
 export const POSTS = 'posts';
