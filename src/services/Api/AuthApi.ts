@@ -2,7 +2,11 @@ import {AxiosResponse} from 'axios';
 import {Api} from '../client/rest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {SIGNUP_USER, SIGN_IN_USER} from '../../constants/apiConstant';
+import {
+  SIGNUP_USER,
+  SIGN_IN_USER,
+  GET_PROFILE,
+} from '../../constants/apiConstant';
 
 interface User {
   id: string;
@@ -15,6 +19,7 @@ interface ApiResponse<T> {
   success: boolean;
   message: string;
   user?: T;
+  data?: T,
   token?: string;
   error?: string; // For error cases
 }
@@ -78,6 +83,24 @@ class AuthApi {
   // Get user from storage
   async getUser(): Promise<string | null> {
     return await AsyncStorage.getItem('user');
+  }
+
+  // Add a new method to fetch user profile
+  async getProfile(): Promise<ApiResponse<User>> {
+    try {
+      const response: AxiosResponse<ApiResponse<User>> = await Api.get(
+        GET_PROFILE
+      );
+
+      console.log('REsponse in auth api:', response);  
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to fetch profile',
+        error: error.response?.data?.error || error.message,
+      };
+    }
   }
 }
 

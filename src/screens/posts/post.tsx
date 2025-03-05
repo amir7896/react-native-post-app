@@ -5,6 +5,7 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
+  Image, // Import Image component
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -21,24 +22,13 @@ import {
   LikeFilledIcons,
   AddPostIcon,
   DeleteIcon,
+  ProfileIcon,
 } from '../../assets/svgs';
 import CommentModal from './components/commentModal/CommentModal';
 import CreatePostModal from './components/postModal/PostModal';
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
 
 import styles from './style';
-
-type Post = {
-  _id: string;
-  title: string;
-  content: string;
-  user: {
-    userId: string;
-    userName: string;
-  };
-  likesCount: number;
-  isLikedByUser: boolean;
-};
 
 const Posts: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -109,6 +99,9 @@ const Posts: React.FC = () => {
     setIsCreatePostVisible(false);
   };
 
+  console.log('Logged in user in post screenj:', user);
+  console.log('Posts in post screen:', posts);
+
   // Create post
   const handleCreatePost = async (formData: FormData) => {
     try {
@@ -123,8 +116,33 @@ const Posts: React.FC = () => {
     }
   };
 
-  const renderItem = ({item}: {item: Post}) => (
+  const renderItem = ({item}: {item: any}) => (
     <View style={styles.card}>
+      {/* Top Section - Profile, Username, Date */}
+      <View style={styles.topSection}>
+        {/* User Profile Card */}
+        <View style={styles.userProfileCard}>
+          {/* If user has not profile image  */}
+          {item?.user?.profileImage ? (
+            <Image
+              source={{
+                uri: `${item?.user?.profileImage}`,
+              }}
+              style={styles.userProfileImage} 
+            />
+          ) : (
+            <ProfileIcon width={50} height={50} />
+          )}
+        </View>
+        {/* User Info (Username and Date) */}
+        <View style={styles.userInfo}>
+          <Text style={styles.userName}>{item.user.userName}</Text>
+          <Text style={styles.postDate}>
+            {new Date(item.createdAt).toLocaleDateString()}
+          </Text>
+        </View>
+      </View>
+
       <Text style={styles.postTitle}>{item.title}</Text>
       <Text style={styles.postBody}>{item.content}</Text>
       <View style={styles.likeCommentSection}>

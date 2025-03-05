@@ -86,6 +86,29 @@ export const login = createAsyncThunk(
   },
 );
 
+// Fetch user profile
+export const fetchUserProfile = createAsyncThunk(
+  'auth/fetchUserProfile',
+  async (_, thunkAPI) => {
+    try {
+      const response = await AuthApi.getProfile();
+      console.log('User Profile Response:', response);
+
+      if (!response.success) {
+        return thunkAPI.rejectWithValue(
+          response.message || 'Failed to fetch profile',
+        );
+      }
+
+      return response.data; // Returning response.data instead of response.user
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.message || 'Failed to fetch profile',
+      );
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -150,7 +173,29 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-      });
+      })
+
+      // Get profile case
+      .addCase(fetchUserProfile.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(
+        fetchUserProfile.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          console.log('User Profile Action Payload:', action.payload);
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.user = action.payload; // Store profile in Redux
+        },
+      )
+      .addCase(
+        fetchUserProfile.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.message = action.payload;
+        },
+      );
   },
 });
 

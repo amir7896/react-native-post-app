@@ -274,6 +274,9 @@ const postSlice = createSlice({
         state.message = 'Post created successfully';
         const {post, user} = action.payload; // Extract post and user from payload
 
+        console.log('Created post in slice:', post);
+        console.log('User in slice:', user);
+
         state.posts = [{...post, user}, ...state.posts]; // Add new post with user at the front
       })
       .addCase(createPost.rejected, (state, action) => {
