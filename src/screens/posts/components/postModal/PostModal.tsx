@@ -142,7 +142,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             onPress={handleSubmit(onSubmit)}
             style={styles.submitButton}>
             {isUploading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color="#bdbdbd" />
             ) : (
               <Text style={styles.submitButtonText}>Post</Text>
             )}

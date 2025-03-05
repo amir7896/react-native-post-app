@@ -15,6 +15,7 @@ import {
   Asset,
 } from 'react-native-image-picker';
 import * as Progress from 'react-native-progress';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Control, FieldValues, useForm} from 'react-hook-form';
 import LinearGradient from 'react-native-linear-gradient';
@@ -186,7 +187,10 @@ const ProfileScreen = () => {
       },
       {
         text: 'Logout',
-        onPress: () => {
+        onPress: async () => {
+          await AsyncStorage.removeItem('userToken');
+          await AsyncStorage.removeItem('user');
+          console.log('User logged out');
           dispatch(logout());
         },
         style: 'destructive',
