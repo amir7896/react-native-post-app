@@ -6,6 +6,8 @@ import {
   SIGNUP_USER,
   SIGN_IN_USER,
   GET_PROFILE,
+  CHANGE_PROFILE_IMAGE,
+  CHANGE_PASSWORD,
 } from '../../constants/apiConstant';
 
 interface User {
@@ -19,7 +21,7 @@ interface ApiResponse<T> {
   success: boolean;
   message: string;
   user?: T;
-  data?: T,
+  data?: T;
   token?: string;
   error?: string; // For error cases
 }
@@ -89,15 +91,53 @@ class AuthApi {
   async getProfile(): Promise<ApiResponse<User>> {
     try {
       const response: AxiosResponse<ApiResponse<User>> = await Api.get(
-        GET_PROFILE
+        GET_PROFILE,
       );
 
-      console.log('REsponse in auth api:', response);  
+      console.log('REsponse in auth api:', response);
       return response.data;
     } catch (error: any) {
       return {
         success: false,
         message: error.response?.data?.message || 'Failed to fetch profile',
+        error: error.response?.data?.error || error.message,
+      };
+    }
+  }
+
+  // Change profile image
+  async changeProfileImage(formData: FormData): Promise<ApiResponse<User>> {
+    try {
+      const response = await Api.post(CHANGE_PROFILE_IMAGE, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      return response.data;
+    } catch (error: any) {
+      console.log('Error in changeProfileImage:', error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message || 'Failed to change profile image',
+        error: error.response?.data?.error || error.message,
+      };
+    }
+  }
+
+  // Change password
+  async changePassword(body: Record<string, any>): Promise<ApiResponse<User>> {
+    try {
+      const response: AxiosResponse<ApiResponse<User>> = await Api.post(
+        CHANGE_PASSWORD,
+        body,
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to change password',
         error: error.response?.data?.error || error.message,
       };
     }

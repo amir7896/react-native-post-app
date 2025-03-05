@@ -8,6 +8,7 @@ import {
   Image, // Import Image component
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import {formatDistanceToNowStrict} from 'date-fns';
 
 import {
   fetchPosts,
@@ -99,9 +100,6 @@ const Posts: React.FC = () => {
     setIsCreatePostVisible(false);
   };
 
-  console.log('Logged in user in post screenj:', user);
-  console.log('Posts in post screen:', posts);
-
   // Create post
   const handleCreatePost = async (formData: FormData) => {
     try {
@@ -116,66 +114,114 @@ const Posts: React.FC = () => {
     }
   };
 
-  const renderItem = ({item}: {item: any}) => (
-    <View style={styles.card}>
-      {/* Top Section - Profile, Username, Date */}
-      <View style={styles.topSection}>
-        {/* User Profile Card */}
-        <View style={styles.userProfileCard}>
-          {/* If user has not profile image  */}
-          {item?.user?.profileImage ? (
-            <Image
-              source={{
-                uri: `${item?.user?.profileImage}`,
-              }}
-              style={styles.userProfileImage} 
-            />
-          ) : (
-            <ProfileIcon width={50} height={50} />
-          )}
-        </View>
-        {/* User Info (Username and Date) */}
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>{item.user.userName}</Text>
-          <Text style={styles.postDate}>
-            {new Date(item.createdAt).toLocaleDateString()}
-          </Text>
-        </View>
-      </View>
+  const renderItem = ({item}: {item: any}) => {
+    const formattedDate = formatDistanceToNowStrict(new Date(item.createdAt), {
+      addSuffix: false,
+      roundingMethod: 'round', // Optional: round the result
+    });
 
-      <Text style={styles.postTitle}>{item.title}</Text>
-      <Text style={styles.postBody}>{item.content}</Text>
-      <View style={styles.likeCommentSection}>
-        {/* Like Button */}
-        <TouchableOpacity
-          style={styles.likeButton}
-          onPress={() => handleLike(item._id)}>
-          {item.isLikedByUser ? (
-            <LikeFilledIcons width={16} height={16} />
-          ) : (
-            <LikeIcon width={16} height={16} />
-          )}
-          <Text style={styles.likeButtonText}>{item.likesCount}</Text>
-        </TouchableOpacity>
-        {/* Delete Post Button */}
-        {/* Show to only those user which are the owner of the pist */}
-        {user?.userId === item.user.userId && (
+    // Extract the number and unit from the formatted date
+    const [value, unit] = formattedDate.split(' ');
+
+    // Abbreviate the unit
+    let abbreviatedUnit = '';
+    switch (unit) {
+      case 'seconds':
+      case 'second':
+        abbreviatedUnit = 's';
+        break;
+      case 'minutes':
+      case 'minute':
+        abbreviatedUnit = 'm';
+        break;
+      case 'hours':
+      case 'hour':
+        abbreviatedUnit = 'h';
+        break;
+      case 'days':
+      case 'day':
+        abbreviatedUnit = 'd';
+        break;
+      case 'weeks':
+      case 'week':
+        abbreviatedUnit = 'w';
+        break;
+      case 'months':
+      case 'month':
+        abbreviatedUnit = 'mo';
+        break;
+      case 'years':
+      case 'year':
+        abbreviatedUnit = 'y';
+        break;
+      default:
+        abbreviatedUnit = unit;
+    }
+
+    const displayDate = `${value}${abbreviatedUnit}`;
+
+    return (
+      <View style={styles.card}>
+        {/* Top Section - Profile, Username, Date */}
+        <View style={styles.topSection}>
+          {/* User Profile Card */}
+          <View style={styles.userProfileCard}>
+            {/* If user has not profile image  */}
+            {item?.user?.profileImage ? (
+              <Image
+                source={{
+                  uri: `${item?.user?.profileImage}`,
+                }}
+                style={styles.userProfileImage}
+              />
+            ) : (
+              <ProfileIcon width={40} height={40} />
+            )}
+          </View>
+          {/* User Info (Username and Date) */}
+          <View style={styles.userInfo}>
+            <Text style={styles.userName}>{item.user.userName}</Text>
+            <Text style={styles.postDate}>{displayDate}</Text>
+          </View>
+        </View>
+
+        {/* Post Content */}
+        <View style={styles.postContent}>
+          <Text style={styles.postTitle}>{item.title}</Text>
+          <Text style={styles.postBody}>{item.content}</Text>
+        </View>
+
+        {/* Like and Comment Section (Buttons) */}
+        <View style={styles.likeCommentSection}>
           <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => handleShowDeleteModal(item._id)}>
-            <DeleteIcon width={16} height={16} fill="red" />
+            style={styles.likeButton}
+            onPress={() => handleLike(item._id)}>
+            {item.isLikedByUser ? (
+              <LikeFilledIcons width={20} height={20} />
+            ) : (
+              <LikeIcon width={20} height={20} />
+            )}
+            <Text style={styles.likeButtonText}>{item.likesCount}</Text>
           </TouchableOpacity>
-        )}
 
-        {/* Show comment button */}
-        <TouchableOpacity
-          style={styles.commentButton}
-          onPress={() => handleShowComments(item._id)}>
-          <CommentIcon width={16} height={16} fill="#4C4F56" />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.commentButton}
+            onPress={() => handleShowComments(item._id)}>
+            <CommentIcon width={20} height={20} fill="#4C4F56" />
+            <Text style={styles.commentButtonText}>Comment</Text>
+          </TouchableOpacity>
+
+          {user?.userId === item.user.userId && (
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => handleShowDeleteModal(item._id)}>
+              <DeleteIcon width={20} height={20} fill="red" />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   const loadMorePosts = () => {
     if (!isLoading && hasMorePosts) {

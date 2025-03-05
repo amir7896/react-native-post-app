@@ -53,9 +53,7 @@ export const createPost = createAsyncThunk(
       const user = state.auth.user; // Access user from auth slice
 
       if (response.success) {
-        // **No need to dispatch fetchPosts here anymore**
-        // await thunkAPI.dispatch(fetchPosts({start: 0, limit: 5}));
-        return {post: response.data, user}; // Return both post and user
+        return {post: response.data, user};
       } else {
         return thunkAPI.rejectWithValue(response.message);
       }
@@ -122,14 +120,13 @@ export const fetchCommentsForPost = createAsyncThunk(
   },
 );
 
+// Thunk to delete a post
 export const deletePost = createAsyncThunk(
   'post/deletePost',
   async (postId: string, thunkAPI) => {
     try {
       const response = await PostApi.deletePost(postId);
       if (response.success) {
-        // **No need to dispatch fetchPosts here anymore**
-        // await thunkAPI.dispatch(fetchPosts({start: 0, limit: 5}));
         return postId; // Return the postId of the deleted post
       }
       return thunkAPI.rejectWithValue(response.message);
@@ -138,6 +135,7 @@ export const deletePost = createAsyncThunk(
     }
   },
 );
+
 
 const postSlice = createSlice({
   name: 'post',
