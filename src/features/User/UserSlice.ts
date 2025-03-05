@@ -127,6 +127,28 @@ export const updateProfileImage = createAsyncThunk(
     }
   },
 );
+
+// Change User Password
+export const changePassword = createAsyncThunk(
+  'user/changePassword',
+  async (body: Record<string, any>, thunkAPI) => {
+    try {
+      const response = await AuthApi.changePassword(body);
+      console.log('Change passwrod response in thunk :', response)
+      if (!response.success) {
+        return thunkAPI.rejectWithValue(
+          response.message || 'Failed to change password',
+        );
+      }
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.message || 'Failed to change password',
+      );
+    }
+  },
+);
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -235,7 +257,28 @@ export const authSlice = createSlice({
           state.message =
             (action.payload as string) || 'Failed to update profile image';
         },
-      );
+      )
+
+      // Change password case
+      .addCase(changePassword.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(
+        changePassword.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          console.log('Change pass word case full filled :', action.payload)
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.message = action.payload.message || 'Password changed';
+          state.user = action.payload.user;
+        },
+      )
+      .addCase(changePassword.rejected, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message =
+          (action.payload as string) || 'Failed to change password';
+      });
   },
 });
 

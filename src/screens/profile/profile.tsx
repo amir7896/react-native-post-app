@@ -14,7 +14,7 @@ import {
   launchImageLibrary,
   Asset,
 } from 'react-native-image-picker';
-import * as Progress from 'react-native-progress'; // Import progress bar
+import * as Progress from 'react-native-progress';
 
 import {Control, FieldValues, useForm} from 'react-hook-form';
 import LinearGradient from 'react-native-linear-gradient';
@@ -27,6 +27,7 @@ import {
   fetchUserProfile,
   logout,
   updateProfileImage,
+  changePassword,
 } from '../../features/User/UserSlice';
 import {RootState, AppDispatch} from '../../app/store';
 
@@ -50,6 +51,7 @@ const ProfileScreen = () => {
     'info',
   );
 
+  // Show alert message
   const showAlert = (
     title: string,
     message: string,
@@ -61,15 +63,15 @@ const ProfileScreen = () => {
     setAlertVisible(true);
   };
 
+  // Hide alert message
   const hideAlert = () => {
     setAlertVisible(false);
   };
 
+  // Fetch user profile on mount
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
-
-  console.log('User Profile :', user);
 
   // Change Profile Image
   const uploadImage = useCallback(
@@ -100,7 +102,6 @@ const ProfileScreen = () => {
         setUploadProgress(1); // Ensure progress is 100% after API call
         showAlert('Success', 'Profile image updated successfully.', 'success');
         setUploading(false);
-
       } catch (error) {
         setUploadProgress(0); // Reset progress on error
         showAlert('Error', 'Failed to update profile image.', 'error');
@@ -110,6 +111,7 @@ const ProfileScreen = () => {
     [dispatch],
   );
 
+  // Upload image when profileImage changes
   useEffect(() => {
     if (profileImage) {
       uploadImage(profileImage);
@@ -120,6 +122,7 @@ const ProfileScreen = () => {
     control,
     handleSubmit,
     formState: {},
+    reset,
   } = useForm<FormData>();
 
   // Function to pick an image
@@ -161,12 +164,17 @@ const ProfileScreen = () => {
   };
 
   // Handle form submission
-  const onSubmit = (data: FormData) => {
-    showAlert(
-      'Password Updated',
-      `Old: ${data.oldPassword}\nNew: ${data.newPassword}`,
-      'info',
-    );
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await dispatch(changePassword(data)).unwrap();
+      console.log('change password response in profile:', response);
+      if (response.success) {
+        reset();
+        showAlert('Success', response.message, 'success');
+      }
+    } catch (error: any) {
+      showAlert('Error', error || 'Failed to update password.', 'error');
+    }
   };
 
   // Handle Logout

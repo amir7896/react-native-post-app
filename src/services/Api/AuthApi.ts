@@ -7,6 +7,7 @@ import {
   SIGN_IN_USER,
   GET_PROFILE,
   CHANGE_PROFILE_IMAGE,
+  CHANGE_PASSWORD,
 } from '../../constants/apiConstant';
 
 interface User {
@@ -120,6 +121,23 @@ class AuthApi {
         success: false,
         message:
           error.response?.data?.message || 'Failed to change profile image',
+        error: error.response?.data?.error || error.message,
+      };
+    }
+  }
+
+  // Change password
+  async changePassword(body: Record<string, any>): Promise<ApiResponse<User>> {
+    try {
+      const response: AxiosResponse<ApiResponse<User>> = await Api.post(
+        CHANGE_PASSWORD,
+        body,
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to change password',
         error: error.response?.data?.error || error.message,
       };
     }
