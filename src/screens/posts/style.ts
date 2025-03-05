@@ -2,6 +2,7 @@
 
 import { StyleSheet } from 'react-native';
 
+
 export default StyleSheet.create({
   container: {
     paddingHorizontal: 0, // Remove horizontal padding
@@ -66,6 +67,7 @@ export default StyleSheet.create({
     lineHeight: 20,
   },
   likeCommentSection: {
+    marginTop:3,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -107,5 +109,22 @@ export default StyleSheet.create({
     alignItems: 'flex-end',
     paddingTop: 15,
     paddingHorizontal: 25,
+  },
+  mediaContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+  },
+  mediaGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 10,
+  },
+  mediaGridItem: {
+    aspectRatio: 1, // Maintain aspect ratio
+    padding: 2,
+  },
+  mediaItem: {
+    flex: 1,
+    borderRadius: 8,
   },
 });

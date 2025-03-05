@@ -6,9 +6,11 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image, // Import Image component
+  Dimensions, // Import Dimensions
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {formatDistanceToNowStrict} from 'date-fns';
+import Video from 'react-native-video'; // Import react-native-video
 
 import {
   fetchPosts,
@@ -30,6 +32,8 @@ import CreatePostModal from './components/postModal/PostModal';
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
 
 import styles from './style';
+
+const {width} = Dimensions.get('window'); // Get screen width
 
 const Posts: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -190,6 +194,41 @@ const Posts: React.FC = () => {
           <Text style={styles.postTitle}>{item.title}</Text>
           <Text style={styles.postBody}>{item.content}</Text>
         </View>
+        {/* Media Display Section */}
+        {/* Media Display Section */}
+        {item.media && item.media.length > 0 && (
+          <View style={styles.mediaGrid}>
+            {item.media.map((mediaItem: any) => {
+              const isVideo = mediaItem.mediaType === 'video';
+              return (
+                <View
+                  key={mediaItem._id}
+                  style={[
+                    styles.mediaGridItem,
+                    {width: (width - 28) / (item.media.length > 1 ? 2 : 1)},
+                    item.media.length === 1 && {height: 300},
+                  ]}>
+                  {isVideo ? (
+                    <Video
+                      source={{uri: mediaItem.secureUrl}}
+                      style={styles.mediaItem}
+                      controls={true}
+                      resizeMode="cover"
+                      volume={1.0}
+                      paused={true}
+                    />
+                  ) : (
+                    <Image
+                      source={{uri: mediaItem.secureUrl}}
+                      style={styles.mediaItem}
+                      resizeMode="cover"
+                    />
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        )}
 
         {/* Like and Comment Section (Buttons) */}
         <View style={styles.likeCommentSection}>
