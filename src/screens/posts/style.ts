@@ -24,7 +24,13 @@ export default StyleSheet.create({
   topSection: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between', // Add this
     marginBottom: 10,
+  },
+  userInfo: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    flex: 1, // Add this
   },
   userProfileCard: {
     width: 40, // Reduced profile image size
@@ -37,9 +43,8 @@ export default StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  userInfo: {
-    flexDirection: 'column',
-    justifyContent: 'center',
+  moreIconContainer: {
+    padding: 8,
   },
   userName: {
     fontSize: 16,

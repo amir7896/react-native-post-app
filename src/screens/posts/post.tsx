@@ -26,7 +26,7 @@ import {
   CommentIcon,
   LikeFilledIcons,
   AddPostIcon,
-  DeleteIcon,
+  MoreIcon,
   ProfileIcon,
 } from '../../assets/svgs';
 import CommentModal from './components/commentModal/CommentModal';
@@ -124,7 +124,7 @@ const Posts: React.FC = () => {
   };
 
   const renderItem = ({item}: {item: any}) => {
-    const displayDate = formatAndAbbreviateDate(new Date(item.createdAt)); // Use the common function
+    const displayDate = formatAndAbbreviateDate(new Date(item.createdAt));
 
     return (
       <TouchableOpacity
@@ -155,6 +155,12 @@ const Posts: React.FC = () => {
             <Text style={styles.userName}>{item.user.userName}</Text>
             <Text style={styles.postDate}>{displayDate}</Text>
           </View>
+          {/* Add MoreIcon here */}
+          <TouchableOpacity
+            style={styles.moreIconContainer}
+            onPress={() => console.log('More Icon Pressed')}>
+            <MoreIcon width={44} height={30} />
+          </TouchableOpacity>
         </View>
 
         {/* Post Content */}
@@ -245,13 +251,14 @@ const Posts: React.FC = () => {
             <Text style={styles.commentButtonText}>Comment</Text>
           </TouchableOpacity>
 
-          {user?.userId === item.user.userId && (
+          {/* Currently hide delete post button */}
+          {/* {user?.userId === item.user.userId && (
             <TouchableOpacity
               style={styles.deleteButton}
               onPress={() => handleShowDeleteModal(item._id)}>
               <DeleteIcon width={20} height={20} fill="red" />
             </TouchableOpacity>
-          )}
+          )} */}
         </View>
       </TouchableOpacity>
     );
