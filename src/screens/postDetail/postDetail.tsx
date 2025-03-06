@@ -79,7 +79,7 @@ const PostDetail: React.FC = () => {
       </View>
       <View style={styles.postContent}>
         <Text style={styles.postTitle}>{singlePost.title}</Text>
-        <Text style={styles.postBody}>{singlePost.content}</Text>
+        {/* <Text style={styles.postBody}>{singlePost.content}</Text> */}
       </View>
       <View style={styles.mediaColumn}>
         {singlePost.media.map((mediaItem: any) => (
