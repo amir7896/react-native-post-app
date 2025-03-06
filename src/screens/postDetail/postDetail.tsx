@@ -1,54 +1,81 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, Image, ScrollView, TouchableOpacity} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import { ChevronLeftIcon } from '../../assets/svgs';
+import {ChevronLeftIcon} from '../../assets/svgs';
 import Video from 'react-native-video';
-import styles from './styles'; // Import styles (create this file)
+import styles from './styles';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchSinglePost} from '../../features/Post/PostSlice';
+import {RootState, AppDispatch} from '../../app/store';
+
 const PostDetail: React.FC = () => {
   const route = useRoute();
-  const navigation = useNavigation(); // Get the navigation object
+  const navigation = useNavigation();
+  const dispatch: AppDispatch = useDispatch();
 
-  const {post} = route?.params as any; // Get post data from navigation params
-  console.log('Post detail Page :', post)
+  const {id} = route?.params as {id: string};
+  const {singlePost, isLoading, isError} = useSelector(
+    (state: RootState) => state.post,
+  );
+
+  useEffect(() => {
+    dispatch(fetchSinglePost(id));
+  }, [dispatch, id]);
+
   const handleGoBack = () => {
-    navigation.goBack(); // Go back to the previous screen
+    navigation.goBack();
   };
+
+  if (isLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (isError || !singlePost) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>Error loading post.</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity style={styles.backButton}>
-        <ChevronLeftIcon width={24} height={24} />
-      </TouchableOpacity>
-      {/* Top Section - Profile, Username, Date */}
+      <View style={styles.backButtonContainer}>
+        <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+          <ChevronLeftIcon width={24} height={24} />
+        </TouchableOpacity>
+      </View>
       <View style={styles.topSection}>
         <View style={styles.userProfileCard}>
-          {post?.user?.profileImage ? (
+          {singlePost?.user?.profileImageSecureUrl ? (
             <Image
-              source={{uri: `${post?.user?.profileImage}`}}
+              source={{uri: singlePost?.user?.profileImageSecureUrl}}
               style={styles.userProfileImage}
             />
           ) : (
-            // You can replace this with your ProfileIcon component
             <Image
-              source={require('../../assets/images/default-profile.png')} // Replace with your actual path
+              source={require('../../assets/images/default-profile.png')}
               style={styles.userProfileImage}
             />
           )}
         </View>
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>{post.user.userName}</Text>
+          <Text style={styles.userName}>{singlePost.user.userName}</Text>
           <Text style={styles.postDate}>
-            {new Date(post.createdAt).toLocaleDateString()}
+            {new Date(singlePost.createdAt).toLocaleDateString()}
           </Text>
         </View>
       </View>
-      {/* Post Content */}
       <View style={styles.postContent}>
-        <Text style={styles.postTitle}>{post.title}</Text>
-        <Text style={styles.postBody}>{post.content}</Text>
+        <Text style={styles.postTitle}>{singlePost.title}</Text>
+        <Text style={styles.postBody}>{singlePost.content}</Text>
       </View>
-      {/* Media Display Section */}
       <View style={styles.mediaColumn}>
-        {post.media.map((mediaItem: any) => (
+        {singlePost.media.map((mediaItem: any) => (
           <View key={mediaItem._id} style={styles.mediaItemContainer}>
             {mediaItem.mediaType === 'image' ? (
               <Image
@@ -71,4 +98,5 @@ const PostDetail: React.FC = () => {
     </ScrollView>
   );
 };
+
 export default PostDetail;

@@ -22,6 +22,23 @@ interface Comment {
   };
 }
 
+interface SinglePost {
+  _id: string;
+  title: string;
+  content: string;
+  user: {
+    userId: string;
+    userName: string;
+    profileImageSecureUrl: string; // Add profileImageSecureUrl
+  };
+  createdAt: string;
+  media: {
+    _id: string;
+    secureUrl: string;
+    mediaType: string;
+  }[];
+}
+
 interface PostState {
   posts: Post[];
   comments: Comment[];
@@ -30,6 +47,7 @@ interface PostState {
   isSuccess: boolean;
   message: string;
   isLikedByUser: boolean;
+  singlePost: SinglePost | null; // Add singlePost state
 }
 
 const initialState: PostState = {
@@ -40,6 +58,7 @@ const initialState: PostState = {
   isSuccess: false,
   message: '',
   isLikedByUser: false,
+  singlePost: null, // Initialize singlePost to null
 };
 
 // Thunk to create a new post
@@ -136,6 +155,27 @@ export const deletePost = createAsyncThunk(
   },
 );
 
+// Thunk to fetch a single post
+export const fetchSinglePost = createAsyncThunk(
+  'post/fetchSinglePost',
+  async (postId: string, thunkAPI) => {
+    try {
+      const response = await PostApi.getSinglePost(postId);
+      if (response.success && response.data) {
+        // Ensure data exists
+        return response.data;
+      } else {
+        return thunkAPI.rejectWithValue(
+          response.message || 'Failed to fetch single post',
+        );
+      }
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.message || 'Failed to fetch single post',
+      );
+    }
+  },
+);
 
 const postSlice = createSlice({
   name: 'post',
@@ -297,6 +337,24 @@ const postSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = (action.payload as string) || 'Failed to delete post';
+      })
+      // Fetch single post cases
+      .addCase(fetchSinglePost.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(
+        fetchSinglePost.fulfilled,
+        (state, action: PayloadAction<SinglePost>) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.singlePost = action.payload;
+        },
+      )
+      .addCase(fetchSinglePost.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message =
+          (action.payload as string) || 'Failed to fetch single post';
       });
   },
 });

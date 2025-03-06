@@ -8,11 +8,10 @@ import {
   Image, // Import Image component
   Dimensions, // Import Dimensions
 } from 'react-native';
-import {useNavigation, NavigationProp} from '@react-navigation/native'; // Import NavigationProp
+import {useNavigation, NavigationProp} from '@react-navigation/native';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {formatDistanceToNowStrict} from 'date-fns';
-import Video from 'react-native-video'; // Import react-native-video
+import Video from 'react-native-video';
 
 import {
   fetchPosts,
@@ -33,6 +32,7 @@ import {
 import CommentModal from './components/commentModal/CommentModal';
 import CreatePostModal from './components/postModal/PostModal';
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
+import {formatAndAbbreviateDate} from '../../utils';
 
 import styles from './style';
 
@@ -124,55 +124,18 @@ const Posts: React.FC = () => {
   };
 
   const renderItem = ({item}: {item: any}) => {
-    const formattedDate = formatDistanceToNowStrict(new Date(item.createdAt), {
-      addSuffix: false,
-      roundingMethod: 'round', // Optional: round the result
-    });
-
-    // Extract the number and unit from the formatted date
-    const [value, unit] = formattedDate.split(' ');
-
-    // Abbreviate the unit
-    let abbreviatedUnit = '';
-    switch (unit) {
-      case 'seconds':
-      case 'second':
-        abbreviatedUnit = 's';
-        break;
-      case 'minutes':
-      case 'minute':
-        abbreviatedUnit = 'm';
-        break;
-      case 'hours':
-      case 'hour':
-        abbreviatedUnit = 'h';
-        break;
-      case 'days':
-      case 'day':
-        abbreviatedUnit = 'd';
-        break;
-      case 'weeks':
-      case 'week':
-        abbreviatedUnit = 'w';
-        break;
-      case 'months':
-      case 'month':
-        abbreviatedUnit = 'mo';
-        break;
-      case 'years':
-      case 'year':
-        abbreviatedUnit = 'y';
-        break;
-      default:
-        abbreviatedUnit = unit;
-    }
-
-    const displayDate = `${value}${abbreviatedUnit}`;
+    const displayDate = formatAndAbbreviateDate(new Date(item.createdAt)); // Use the common function
 
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => navigation.navigate('PostDetail', {post: item,  user: user})}>
+        onPress={() =>
+          navigation.navigate('PostDetail', {
+            post: item,
+            user: user,
+            id: item?._id,
+          })
+        }>
         {/* Top Section - Profile, Username, Date */}
         <View style={styles.topSection}>
           {/* User Profile Card */}

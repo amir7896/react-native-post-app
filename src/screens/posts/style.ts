@@ -125,6 +125,6 @@ export default StyleSheet.create({
   },
   mediaItem: {
     flex: 1,
-    borderRadius: 8,
+    borderRadius: 0,
   },
 });

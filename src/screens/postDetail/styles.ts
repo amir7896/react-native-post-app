@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 
 const {width} = Dimensions.get('window');
 
@@ -7,7 +7,20 @@ export default StyleSheet.create({
     padding: 12,
     backgroundColor: '#f0f2f5',
   },
+  backButtonContainer: {
+    // Add container for back button
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 5 : 5, // Adjust top for iOS status bar
+    left: 0,
+    zIndex: 10, // Ensure it's on top
+  },
+  backButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Add background for better visibility
+  },
   topSection: {
+    marginTop:45,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
@@ -68,5 +81,4 @@ export default StyleSheet.create({
     borderRadius: 8,
     backgroundColor: 'black',
   },
-
 });

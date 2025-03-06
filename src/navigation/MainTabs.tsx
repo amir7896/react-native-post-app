@@ -44,7 +44,7 @@ type AppTabsParamList = {
   Home: undefined;
   Post: undefined;
   Profile: undefined;
-  PostDetail: {post: Post, user: any}; // Define the post parameter type here
+  PostDetail: {post: Post, user: any, id: string}; // Define the post parameter type here
 };
 
 export type {AppTabsParamList}; // Export the type
