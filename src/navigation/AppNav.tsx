@@ -21,7 +21,7 @@ const AppNav = () => {
     // Show a loading spinner while checking auth state
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#bdbdbd" />
       </View>
     );
   }

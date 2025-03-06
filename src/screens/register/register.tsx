@@ -133,7 +133,7 @@ const RegisterScreen: React.FC = () => {
         {isLoading && (
           <ActivityIndicator
             size="large"
-            color="#0000ff"
+            color="#bdbdbd"
             style={styles.loader}
           />
         )}

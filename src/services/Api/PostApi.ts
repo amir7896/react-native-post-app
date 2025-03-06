@@ -7,6 +7,7 @@ import {
   GET_ALL_COMMENTS_FOR_POST,
   CREATE_POST,
   DELETE_POST,
+  GET_SINGLE_POST,
 } from '../../constants/apiConstant';
 
 interface Post {
@@ -19,6 +20,23 @@ interface Post {
   };
   likesCount: number;
   isLikedByUser: boolean;
+}
+
+interface SinglePost {
+  _id: string;
+  title: string;
+  content: string;
+  user: {
+    userId: string;
+    userName: string;
+    profileImageSecureUrl: string; // Add profileImageSecureUrl
+  };
+  createdAt: string;
+  media: {
+    _id: string;
+    secureUrl: string;
+    mediaType: string;
+  }[];
 }
 
 interface ApiResponse<T> {
@@ -166,6 +184,21 @@ class PostApi {
       return {
         success: false,
         message: 'Failed to delete post',
+        error: error.message,
+      };
+    }
+  }
+
+  // Get single post
+  async getSinglePost(postId: string): Promise<ApiResponse<SinglePost>> {
+    try {
+      const response = await Api.get(`${GET_SINGLE_POST}/${postId}`);
+      return response.data;
+    } catch (error: any) {
+      console.log('Error in get single post in api :', error);
+      return {
+        success: false,
+        message: 'Failed got get single post',
         error: error.message,
       };
     }

@@ -1,6 +1,6 @@
 'use strict';
 
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
   container: {
@@ -18,7 +18,7 @@ export default StyleSheet.create({
       height: 1,
     },
     shadowOpacity: 0.18,
-    shadowRadius: 1.00,
+    shadowRadius: 1.0,
     elevation: 1,
   },
   topSection: {
@@ -58,7 +58,7 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     marginBottom: 4,
-    color: '#050505'
+    color: '#050505',
   },
   postBody: {
     fontSize: 14,
@@ -66,6 +66,7 @@ export default StyleSheet.create({
     lineHeight: 20,
   },
   likeCommentSection: {
+    marginTop: 3,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -107,5 +108,39 @@ export default StyleSheet.create({
     alignItems: 'flex-end',
     paddingTop: 15,
     paddingHorizontal: 25,
+  },
+  mediaContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+  },
+  mediaGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 10,
+  },
+  mediaGridItem: {
+    padding: 2,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  mediaItem: {
+    flex: 1,
+    borderRadius: 0,
+    resizeMode: 'cover', // Ensure images cover the area
+  },
+  moreImagesOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  moreImagesText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });

@@ -6,9 +6,12 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image, // Import Image component
+  Dimensions, // Import Dimensions
 } from 'react-native';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
+
 import {useDispatch, useSelector} from 'react-redux';
-import {formatDistanceToNowStrict} from 'date-fns';
+import Video from 'react-native-video';
 
 import {
   fetchPosts,
@@ -17,6 +20,7 @@ import {
   deletePost,
 } from '../../features/Post/PostSlice';
 import type {RootState, AppDispatch} from '../../app/store';
+import type {AppTabsParamList} from '../../navigation/MainTabs'; // Import the type
 import {
   LikeIcon,
   CommentIcon,
@@ -28,8 +32,11 @@ import {
 import CommentModal from './components/commentModal/CommentModal';
 import CreatePostModal from './components/postModal/PostModal';
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
+import {formatAndAbbreviateDate} from '../../utils';
 
 import styles from './style';
+
+const {width} = Dimensions.get('window'); // Get screen width
 
 const Posts: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -44,6 +51,8 @@ const Posts: React.FC = () => {
   const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [postId, setPostId] = useState<any>(null);
+
+  const navigation = useNavigation<NavigationProp<AppTabsParamList>>(); // Use the type
 
   // Show delete Modal
   const handleShowDeleteModal = (id: string) => {
@@ -115,53 +124,16 @@ const Posts: React.FC = () => {
   };
 
   const renderItem = ({item}: {item: any}) => {
-    const formattedDate = formatDistanceToNowStrict(new Date(item.createdAt), {
-      addSuffix: false,
-      roundingMethod: 'round', // Optional: round the result
-    });
-
-    // Extract the number and unit from the formatted date
-    const [value, unit] = formattedDate.split(' ');
-
-    // Abbreviate the unit
-    let abbreviatedUnit = '';
-    switch (unit) {
-      case 'seconds':
-      case 'second':
-        abbreviatedUnit = 's';
-        break;
-      case 'minutes':
-      case 'minute':
-        abbreviatedUnit = 'm';
-        break;
-      case 'hours':
-      case 'hour':
-        abbreviatedUnit = 'h';
-        break;
-      case 'days':
-      case 'day':
-        abbreviatedUnit = 'd';
-        break;
-      case 'weeks':
-      case 'week':
-        abbreviatedUnit = 'w';
-        break;
-      case 'months':
-      case 'month':
-        abbreviatedUnit = 'mo';
-        break;
-      case 'years':
-      case 'year':
-        abbreviatedUnit = 'y';
-        break;
-      default:
-        abbreviatedUnit = unit;
-    }
-
-    const displayDate = `${value}${abbreviatedUnit}`;
+    const displayDate = formatAndAbbreviateDate(new Date(item.createdAt)); // Use the common function
 
     return (
-      <View style={styles.card}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() =>
+          navigation.navigate('PostDetail', {
+            id: item?._id,
+          })
+        }>
         {/* Top Section - Profile, Username, Date */}
         <View style={styles.topSection}>
           {/* User Profile Card */}
@@ -188,8 +160,70 @@ const Posts: React.FC = () => {
         {/* Post Content */}
         <View style={styles.postContent}>
           <Text style={styles.postTitle}>{item.title}</Text>
-          <Text style={styles.postBody}>{item.content}</Text>
+          {/* <Text style={styles.postBody}>{item.content}</Text> */}
         </View>
+        {/* Media Display Section */}
+        {item.media && item.media.length > 0 && (
+          <View style={styles.mediaGrid}>
+            {item.media.slice(0, 5).map((mediaItem: any, index: number) => {
+              const isVideo = mediaItem.mediaType === 'video';
+              const isLastItem = index === 4 && item.media.length > 5;
+
+              // Calculate dimensions based on the number of images
+              let gridItemStyle = {};
+              if (item.media.length === 1) {
+                gridItemStyle = {width: width - 24, height: 300};
+              } else if (item.media.length === 2) {
+                gridItemStyle = {width: (width - 28) / 2, height: 200};
+              } else if (item.media.length === 3) {
+                if (index === 0) {
+                  gridItemStyle = {width: width - 24, height: 250};
+                } else {
+                  gridItemStyle = {width: (width - 24) / 2, height: 150};
+                }
+              } else if (item.media.length === 4) {
+                // Logic for 4 media items
+                gridItemStyle = {width: (width - 28) / 2, height: 150};
+              } else if (item.media.length > 4) {
+                if (index < 2) {
+                  gridItemStyle = {width: (width - 28) / 2, height: 150};
+                } else {
+                  gridItemStyle = {width: (width - 28) / 3, height: 150};
+                }
+              }
+
+              return (
+                <View
+                  key={mediaItem._id}
+                  style={[styles.mediaGridItem, gridItemStyle]}>
+                  {isVideo ? (
+                    <Video
+                      source={{uri: mediaItem.secureUrl}}
+                      style={styles.mediaItem}
+                      controls={true}
+                      resizeMode="cover"
+                      volume={1.0}
+                      paused={true}
+                    />
+                  ) : (
+                    <Image
+                      source={{uri: mediaItem.secureUrl}}
+                      style={styles.mediaItem}
+                      resizeMode="cover"
+                    />
+                  )}
+                  {isLastItem && ( // Render overlay only if there are more than 5 images
+                    <View style={styles.moreImagesOverlay}>
+                      <Text style={styles.moreImagesText}>
+                        +{item.media.length - 5}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        )}
 
         {/* Like and Comment Section (Buttons) */}
         <View style={styles.likeCommentSection}>
@@ -219,7 +253,7 @@ const Posts: React.FC = () => {
             </TouchableOpacity>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
