@@ -98,7 +98,7 @@ const ProfileTabOptions = {
 };
 
 const Tabs = () => (
-  <AppTabs.Navigator>
+  <AppTabs.Navigator screenOptions={{ headerShown: false }}>
     <AppTabs.Screen
       name="Home"
       component={HomeScreen}

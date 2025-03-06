@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {View, Text, Image, ScrollView, TouchableOpacity} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {ChevronLeftIcon} from '../../assets/svgs';
+import { ArrowLeftIcon} from '../../assets/svgs';
 import Video from 'react-native-video';
 import styles from './styles';
 import {useDispatch, useSelector} from 'react-redux';
@@ -18,8 +18,6 @@ const PostDetail: React.FC = () => {
     (state: RootState) => state.post,
   );
 
-  console.log('IsLoading in single post :', isLoading);
-  console.log('IsError in single', isError);
 
   useEffect(() => {
     dispatch(fetchSinglePost(id));
@@ -49,7 +47,7 @@ const PostDetail: React.FC = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.backButtonContainer}>
         <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
-          <ChevronLeftIcon width={24} height={24} />
+          <ArrowLeftIcon width={24} height={24} />
         </TouchableOpacity>
       </View>
       <View style={styles.topSection}>

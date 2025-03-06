@@ -15,7 +15,7 @@ export default StyleSheet.create({
     zIndex: 10, // Ensure it's on top
   },
   backButton: {
-    padding: 8,
+    padding: 5,
     borderRadius: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.7)', // Add background for better visibility
   },
