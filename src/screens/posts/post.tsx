@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   Text,
   View,
@@ -12,6 +12,8 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 
 import {useDispatch, useSelector} from 'react-redux';
 import Video from 'react-native-video';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import BottomSheetContent from './components/bottomDrawer/BottomSheetContent'; // Import the new component
 
 import {
   fetchPosts,
@@ -53,6 +55,7 @@ const Posts: React.FC = () => {
   const [postId, setPostId] = useState<any>(null);
 
   const navigation = useNavigation<NavigationProp<AppTabsParamList>>(); // Use the type
+  const refRBSheet = useRef<any>(null);
 
   // Show delete Modal
   const handleShowDeleteModal = (id: string) => {
@@ -158,7 +161,7 @@ const Posts: React.FC = () => {
           {/* Add MoreIcon here */}
           <TouchableOpacity
             style={styles.moreIconContainer}
-            onPress={() => console.log('More Icon Pressed')}>
+            onPress={() => refRBSheet.current && refRBSheet.current.open()}>
             <MoreIcon width={44} height={30} />
           </TouchableOpacity>
         </View>
@@ -318,6 +321,27 @@ const Posts: React.FC = () => {
         onCancel={handleHideDeleteModal}
         onDelete={handleDelete}
       />
+      {/* Bottom Sheet  */}
+      <RBSheet
+        ref={refRBSheet}
+        useNativeDriver={true}
+        customStyles={{
+          wrapper: {
+            backgroundColor: 'transparent',
+          },
+          draggableIcon: {
+            backgroundColor: '#000',
+          },
+        }}
+        customModalProps={{
+          animationType: 'slide',
+          statusBarTranslucent: true,
+        }}
+        customAvoidingViewProps={{
+          enabled: false,
+        }}>
+        <BottomSheetContent />
+      </RBSheet>
     </>
   );
 };
