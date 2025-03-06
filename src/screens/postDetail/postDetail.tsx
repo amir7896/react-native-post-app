@@ -1,12 +1,16 @@
 import React, {useEffect} from 'react';
 import {View, Text, Image, ScrollView, TouchableOpacity} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import { ArrowLeftIcon} from '../../assets/svgs';
 import Video from 'react-native-video';
-import styles from './styles';
 import {useDispatch, useSelector} from 'react-redux';
+
+import {formatAndAbbreviateDate} from '../../utils';
+import {ArrowLeftIcon} from '../../assets/svgs';
+
 import {fetchSinglePost} from '../../features/Post/PostSlice';
 import {RootState, AppDispatch} from '../../app/store';
+
+import styles from './styles';
 
 const PostDetail: React.FC = () => {
   const route = useRoute();
@@ -26,6 +30,8 @@ const PostDetail: React.FC = () => {
   const handleGoBack = () => {
     navigation.goBack();
   };
+  const displayDate = singlePost?.createdAt ? formatAndAbbreviateDate(new Date(singlePost.createdAt)) : ''; // Use the common function
+
 
   if (isLoading) {
     return (
@@ -67,7 +73,7 @@ const PostDetail: React.FC = () => {
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{singlePost.user.userName}</Text>
           <Text style={styles.postDate}>
-            {new Date(singlePost.createdAt).toLocaleDateString()}
+            {displayDate}
           </Text>
         </View>
       </View>

@@ -160,22 +160,42 @@ const Posts: React.FC = () => {
         {/* Post Content */}
         <View style={styles.postContent}>
           <Text style={styles.postTitle}>{item.title}</Text>
-          <Text style={styles.postBody}>{item.content}</Text>
+          {/* <Text style={styles.postBody}>{item.content}</Text> */}
         </View>
-        {/* Media Display Section */}
         {/* Media Display Section */}
         {item.media && item.media.length > 0 && (
           <View style={styles.mediaGrid}>
-            {item.media.map((mediaItem: any) => {
+            {item.media.slice(0, 5).map((mediaItem: any, index: number) => {
               const isVideo = mediaItem.mediaType === 'video';
+              const isLastItem = index === 4 && item.media.length > 5;
+
+              // Calculate dimensions based on the number of images
+              let gridItemStyle = {};
+              if (item.media.length === 1) {
+                gridItemStyle = {width: width - 24, height: 300};
+              } else if (item.media.length === 2) {
+                gridItemStyle = {width: (width - 28) / 2, height: 200};
+              } else if (item.media.length === 3) {
+                if (index === 0) {
+                  gridItemStyle = {width: width - 24, height: 250};
+                } else {
+                  gridItemStyle = {width: (width - 24) / 2, height: 150};
+                }
+              } else if (item.media.length === 4) {
+                // Logic for 4 media items
+                gridItemStyle = {width: (width - 28) / 2, height: 150};
+              } else if (item.media.length > 4) {
+                if (index < 2) {
+                  gridItemStyle = {width: (width - 28) / 2, height: 150};
+                } else {
+                  gridItemStyle = {width: (width - 28) / 3, height: 150};
+                }
+              }
+
               return (
                 <View
                   key={mediaItem._id}
-                  style={[
-                    styles.mediaGridItem,
-                    {width: (width - 28) / (item.media.length > 1 ? 2 : 1)},
-                    item.media.length === 1 && {height: 300},
-                  ]}>
+                  style={[styles.mediaGridItem, gridItemStyle]}>
                   {isVideo ? (
                     <Video
                       source={{uri: mediaItem.secureUrl}}
@@ -191,6 +211,13 @@ const Posts: React.FC = () => {
                       style={styles.mediaItem}
                       resizeMode="cover"
                     />
+                  )}
+                  {isLastItem && ( // Render overlay only if there are more than 5 images
+                    <View style={styles.moreImagesOverlay}>
+                      <Text style={styles.moreImagesText}>
+                        +{item.media.length - 5}
+                      </Text>
+                    </View>
                   )}
                 </View>
               );
