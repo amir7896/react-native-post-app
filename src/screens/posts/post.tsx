@@ -131,8 +131,6 @@ const Posts: React.FC = () => {
         style={styles.card}
         onPress={() =>
           navigation.navigate('PostDetail', {
-            post: item,
-            user: user,
             id: item?._id,
           })
         }>

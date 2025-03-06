@@ -18,6 +18,9 @@ const PostDetail: React.FC = () => {
     (state: RootState) => state.post,
   );
 
+  console.log('IsLoading in single post :', isLoading);
+  console.log('IsError in single', isError);
+
   useEffect(() => {
     dispatch(fetchSinglePost(id));
   }, [dispatch, id]);
@@ -28,7 +31,7 @@ const PostDetail: React.FC = () => {
 
   if (isLoading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.loadingContainer}>
         <Text>Loading...</Text>
       </View>
     );
@@ -36,7 +39,7 @@ const PostDetail: React.FC = () => {
 
   if (isError || !singlePost) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.loadingContainer}>
         <Text>Error loading post.</Text>
       </View>
     );

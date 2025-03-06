@@ -193,7 +193,6 @@ class PostApi {
   async getSinglePost(postId: string): Promise<ApiResponse<SinglePost>> {
     try {
       const response = await Api.get(`${GET_SINGLE_POST}/${postId}`);
-      console.log('Get single post api response  :', response);
       return response.data;
     } catch (error: any) {
       console.log('Error in get single post in api :', error);
@@ -204,7 +203,6 @@ class PostApi {
       };
     }
   }
-  
 }
 
 export default PostApi.sharedInstance;

@@ -20,7 +20,7 @@ export default StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.7)', // Add background for better visibility
   },
   topSection: {
-    marginTop:45,
+    marginTop: 45,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
@@ -80,5 +80,10 @@ export default StyleSheet.create({
     height: 300,
     borderRadius: 8,
     backgroundColor: 'black',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

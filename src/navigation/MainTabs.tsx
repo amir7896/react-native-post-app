@@ -19,32 +19,12 @@ import {Text, StyleSheet} from 'react-native';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
-// Define the type for your post object
-type Post = {
-  _id: string;
-  user: {
-    userId: string;
-    userName: string;
-    profileImage: string;
-  };
-  title: string;
-  content: string;
-  media: {
-    publicId: string;
-    secureUrl: string;
-    mediaType: 'image' | 'video';
-    _id: string;
-  };
-  createdAt: string;
-  likesCount: number;
-  isLikedByUser: boolean;
-};
 
 type AppTabsParamList = {
   Home: undefined;
   Post: undefined;
   Profile: undefined;
-  PostDetail: {post: Post, user: any, id: string}; // Define the post parameter type here
+  PostDetail: { id: string}; // Define the post parameter type here
 };
 
 export type {AppTabsParamList}; // Export the type
