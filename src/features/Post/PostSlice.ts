@@ -26,6 +26,8 @@ interface SinglePost {
   _id: string;
   title: string;
   content: string;
+  isLikedByUser: boolean,
+  likesCount: number,
   user: {
     userId: string;
     userName: string;

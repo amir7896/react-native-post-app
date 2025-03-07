@@ -13,6 +13,7 @@ export default StyleSheet.create({
   card: {
     backgroundColor: 'white',
     padding: 12,
+    marginHorizontal: 12,
     marginVertical: 4,
     shadowColor: '#000',
     shadowOffset: {
@@ -22,6 +23,7 @@ export default StyleSheet.create({
     shadowOpacity: 0.18,
     shadowRadius: 1.0,
     elevation: 1,
+    borderRadius: 5,
   },
   topSection: {
     flexDirection: 'row',
@@ -171,9 +173,29 @@ export default StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     flexDirection: 'row',
+    alignItems: 'flex-start',
   },
   commentUser: {
     fontWeight: 'bold',
     marginRight: 5,
+  },
+  commentSection: {
+    marginTop: 10,
+    paddingHorizontal: 12,
+    marginBottom: 20,
+  },
+  commentProfile: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginRight: 10,
+  },
+  commentProfileImage: {
+    width: '100%',
+    height: '100%',
+  },
+  commentContent: {
+    flex: 1,
   },
 });

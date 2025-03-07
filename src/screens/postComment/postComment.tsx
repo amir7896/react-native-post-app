@@ -29,7 +29,7 @@ import {
 } from '../../features/Post/PostSlice';
 import {RootState, AppDispatch} from '../../app/store';
 
-import styles from './styles'; // Use styles from post.tsx
+import styles from './styles';
 
 const {width} = Dimensions.get('window');
 
@@ -43,18 +43,14 @@ const PostComment: React.FC = () => {
     (state: RootState) => state.post,
   );
 
-  // Fetch post ..
   useEffect(() => {
     dispatch(fetchSinglePost(id));
   }, [dispatch, id]);
 
-  // Fetch post comments
   useEffect(() => {
     dispatch(fetchCommentsForPost(id));
   }, [id, dispatch]);
 
-  console.log('Single Post :', singlePost);
-  console.log('comments :', comments )
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -86,133 +82,133 @@ const PostComment: React.FC = () => {
   const renderCommentItem = ({item}: {item: any}) => (
     <View style={styles.commentItem}>
       <Text style={styles.commentUser}>{item.user.userName}: </Text>
-      <Text>{item.text}</Text>
+      <Text>{item.content}</Text>
     </View>
   );
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Back Button */}
       <View style={styles.backButtonContainer}>
         <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
           <ArrowLeftIcon width={24} height={24} />
         </TouchableOpacity>
       </View>
 
-      {/* Post UI (copied from post.tsx) */}
-      <View style={styles.topSection}>
-        {/* ... (rest of the post UI remains the same) */}
-        <View style={styles.userProfileCard}>
-          {singlePost?.user?.profileImageSecureUrl ? (
-            <Image
-              source={{uri: singlePost?.user?.profileImageSecureUrl}}
-              style={styles.userProfileImage}
-            />
-          ) : (
-            <ProfileIcon width={40} height={40} />
-          )}
+      <View style={styles.card}>
+        <View style={styles.topSection}>
+          <View style={styles.userProfileCard}>
+            {singlePost?.user?.profileImageSecureUrl ? (
+              <Image
+                source={{uri: singlePost?.user?.profileImageSecureUrl}}
+                style={styles.userProfileImage}
+              />
+            ) : (
+              <ProfileIcon width={40} height={40} />
+            )}
+          </View>
+          <View style={styles.userInfo}>
+            <Text style={styles.userName}>{singlePost.user.userName}</Text>
+            <Text style={styles.postDate}>{displayDate}</Text>
+          </View>
         </View>
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>{singlePost.user.userName}</Text>
-          <Text style={styles.postDate}>{displayDate}</Text>
+
+        <View style={styles.postContent}>
+          <Text style={styles.postTitle}>{singlePost.title}</Text>
         </View>
-      </View>
 
-      <View style={styles.postContent}>
-        <Text style={styles.postTitle}>{singlePost.title}</Text>
-      </View>
+        {singlePost.media && singlePost.media.length > 0 && (
+          <View style={styles.mediaGrid}>
+            {singlePost.media
+              .slice(0, 5)
+              .map((mediaItem: any, index: number) => {
+                const isVideo = mediaItem.mediaType === 'video';
+                const isLastItem = index === 4 && singlePost.media.length > 5;
 
-      {singlePost.media && singlePost.media.length > 0 && (
-        <View style={styles.mediaGrid}>
-          {singlePost.media.slice(0, 5).map((mediaItem: any, index: number) => {
-            // ... (media display logic from post.tsx)
-            const isVideo = mediaItem.mediaType === 'video';
-            const isLastItem = index === 4 && singlePost.media.length > 5;
+                let gridItemStyle = {};
+                if (singlePost.media.length === 1) {
+                  gridItemStyle = {width: width - 24, height: 300};
+                } else if (singlePost.media.length === 2) {
+                  gridItemStyle = {width: (width - 28) / 2, height: 200};
+                } else if (singlePost.media.length === 3) {
+                  if (index === 0) {
+                    gridItemStyle = {width: width - 24, height: 250};
+                  } else {
+                    gridItemStyle = {width: (width - 24) / 2, height: 150};
+                  }
+                } else if (singlePost.media.length === 4) {
+                  gridItemStyle = {width: (width - 28) / 2, height: 150};
+                } else if (singlePost.media.length > 4) {
+                  if (index < 2) {
+                    gridItemStyle = {width: (width - 28) / 2, height: 150};
+                  } else {
+                    gridItemStyle = {width: (width - 28) / 3, height: 150};
+                  }
+                }
 
-            let gridItemStyle = {};
-            if (singlePost.media.length === 1) {
-              gridItemStyle = {width: width - 24, height: 300};
-            } else if (singlePost.media.length === 2) {
-              gridItemStyle = {width: (width - 28) / 2, height: 200};
-            } else if (singlePost.media.length === 3) {
-              if (index === 0) {
-                gridItemStyle = {width: width - 24, height: 250};
-              } else {
-                gridItemStyle = {width: (width - 24) / 2, height: 150};
-              }
-            } else if (singlePost.media.length === 4) {
-              gridItemStyle = {width: (width - 28) / 2, height: 150};
-            } else if (singlePost.media.length > 4) {
-              if (index < 2) {
-                gridItemStyle = {width: (width - 28) / 2, height: 150};
-              } else {
-                gridItemStyle = {width: (width - 28) / 3, height: 150};
-              }
-            }
-
-            return (
-              <View
-                key={mediaItem._id}
-                style={[styles.mediaGridItem, gridItemStyle]}>
-                {isVideo ? (
-                  <Video
-                    source={{uri: mediaItem.secureUrl}}
-                    style={styles.mediaItem}
-                    controls={true}
-                    resizeMode="cover"
-                    volume={1.0}
-                    paused={true}
-                  />
-                ) : (
-                  <Image
-                    source={{uri: mediaItem.secureUrl}}
-                    style={styles.mediaItem}
-                    resizeMode="cover"
-                  />
-                )}
-                {isLastItem && (
-                  <View style={styles.moreImagesOverlay}>
-                    <Text style={styles.moreImagesText}>
-                      +{singlePost.media.length - 5}
-                    </Text>
+                return (
+                  <View
+                    key={mediaItem._id}
+                    style={[styles.mediaGridItem, gridItemStyle]}>
+                    {isVideo ? (
+                      <Video
+                        source={{uri: mediaItem.secureUrl}}
+                        style={styles.mediaItem}
+                        controls={true}
+                        resizeMode="cover"
+                        volume={1.0}
+                        paused={true}
+                      />
+                    ) : (
+                      <Image
+                        source={{uri: mediaItem.secureUrl}}
+                        style={styles.mediaItem}
+                        resizeMode="cover"
+                      />
+                    )}
+                    {isLastItem && (
+                      <View style={styles.moreImagesOverlay}>
+                        <Text style={styles.moreImagesText}>
+                          +{singlePost.media.length - 5}
+                        </Text>
+                      </View>
+                    )}
                   </View>
-                )}
-              </View>
-            );
-          })}
+                );
+              })}
+          </View>
+        )}
+
+        <View style={styles.likeCommentSection}>
+          <TouchableOpacity
+            style={styles.likeButton}
+            onPress={() => handleLike(singlePost._id)}>
+            {singlePost.isLikedByUser ? (
+              <LikeFilledIcons width={20} height={20} />
+            ) : (
+              <LikeIcon width={20} height={20} />
+            )}
+            <Text style={styles.likeButtonText}>{singlePost.likesCount}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.commentButton}>
+            <CommentIcon width={20} height={20} fill="#4C4F56" />
+            <Text style={styles.commentButtonText}>Comment</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.commentButton}>
+            <ShareIcon width={20} height={20} fill="#4C4F56" />
+            <Text style={styles.commentButtonText}>Share</Text>
+          </TouchableOpacity>
         </View>
-      )}
-
-      <View style={styles.likeCommentSection}>
-        <TouchableOpacity
-          style={styles.likeButton}
-          onPress={() => handleLike(singlePost._id)}>
-          {singlePost.isLikedByUser ? (
-            <LikeFilledIcons width={20} height={20} />
-          ) : (
-            <LikeIcon width={20} height={20} />
-          )}
-          <Text style={styles.likeButtonText}>{singlePost.likesCount}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.commentButton}>
-          <CommentIcon width={20} height={20} fill="#4C4F56" />
-          <Text style={styles.commentButtonText}>Comment</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.commentButton}>
-          <ShareIcon width={20} height={20} fill="#4C4F56" />
-          <Text style={styles.commentButtonText}>Share</Text>
-        </TouchableOpacity>
+        <View style={styles.commentSection}>
+          <FlatList
+            data={comments}
+            renderItem={renderCommentItem}
+            keyExtractor={item => item?._id}
+            style={styles.commentList}
+          />
+        </View>
       </View>
-
-      {/* Comments FlatList */}
-      <FlatList
-        data={comments}
-        renderItem={renderCommentItem}
-        keyExtractor={item => item.id}
-        style={styles.commentList} // Add commentList style
-      />
     </ScrollView>
   );
 };
