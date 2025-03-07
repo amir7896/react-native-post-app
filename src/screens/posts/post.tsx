@@ -324,7 +324,8 @@ const Posts: React.FC = () => {
       {/* Bottom Sheet  */}
       <RBSheet
         ref={refRBSheet}
-        useNativeDriver={true}
+        height={270} // Adjust the height base on items 
+        useNativeDriver={false}
         customStyles={{
           wrapper: {
             backgroundColor: 'transparent',

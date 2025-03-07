@@ -1,39 +1,109 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  DeleteFilledIcons,
+  ShareIcon,
+  SettingIcon,
+  BookMarkIcon,
+  MinimizeIcon,
+} from '../../../../assets/svgs';
 
 interface BottomSheetContentProps {}
 
 const BottomSheetContent: React.FC<BottomSheetContentProps> = () => {
+  const handleMinimize = () => {
+    console.log('Minimize icon clicked!');
+    // Add your logic here to close the bottom sheet or perform other actions
+  };
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Edit Post</Text>
+      {/* Minimize Icon */}
+      <TouchableOpacity onPress={handleMinimize} style={styles.minimizeButton}>
+        <MinimizeIcon height={25} width={25}  />
       </TouchableOpacity>
+
+      {/* Delete Icon */}
       <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Delete Post</Text>
+        <DeleteFilledIcons height={24} width={24} style={styles.icon} />
+        <View>
+          <Text style={styles.buttonText}>Delete</Text>
+        </View>
       </TouchableOpacity>
+
+      {/* Share Icon */}
+      <View style={styles.separator} />
       <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Report Post</Text>
+        <ShareIcon height={24} width={24} style={styles.icon} />
+        <View>
+          <Text style={styles.buttonText}>Share</Text>
+          {/* <Text style={styles.subText}>Would you like to share this post?</Text> */}
+        </View>
       </TouchableOpacity>
-      {/* Add more buttons as needed */}
+
+      {/* Edit Icon */}
+      <View style={styles.separator} />
+      <TouchableOpacity style={styles.button}>
+        <SettingIcon height={24} width={24} style={styles.icon} />
+        <View>
+          <Text style={styles.buttonText}>Edit</Text>
+        </View>
+      </TouchableOpacity>
+
+      {/* Save Icon */}
+      <View style={styles.separator} />
+      <TouchableOpacity style={styles.button}>
+        <BookMarkIcon height={24} width={24} style={styles.icon} />
+        <View>
+          <Text style={styles.buttonText}>Save post</Text>
+          {/* <Text style={styles.subText}>Add this to your saved items.</Text> */}
+        </View>
+      </TouchableOpacity>
+      <View style={styles.separator} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    backgroundColor: 'white',
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: -2},
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5,
+    minHeight: 500,
+  },
+  minimizeButton: {
+    alignItems: 'center',
+    marginBottom: 5,
   },
   button: {
-    backgroundColor: '#e4e6eb', // Example button color
-    padding: 15,
-    marginVertical: 5,
-    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
   },
   buttonText: {
-    fontSize: 16,
-    textAlign: 'center',
+    fontSize: 15,
+    color: '#000',
+    marginLeft: 15,
+    fontWeight: '500',
+  },
+  subText: {
+    fontSize: 12,
+    color: '#888',
+    marginLeft: 15,
+  },
+  icon: {
+    marginRight: 0,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#e0e0e0',
+    marginVertical: 5,
   },
 });
 
