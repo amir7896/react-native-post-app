@@ -13,7 +13,7 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import Video from 'react-native-video';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import BottomSheetContent from './components/bottomDrawer/BottomSheetContent'; // Import the new component
+import BottomSheetContent from './components/bottomDrawer/BottomSheetContent';
 
 import {
   fetchPosts,
@@ -22,7 +22,7 @@ import {
   deletePost,
 } from '../../features/Post/PostSlice';
 import type {RootState, AppDispatch} from '../../app/store';
-import type {AppTabsParamList} from '../../navigation/MainTabs'; // Import the type
+import type {AppTabsParamList} from '../../navigation/MainTabs';
 import {
   LikeIcon,
   CommentIcon,
@@ -38,7 +38,7 @@ import {formatAndAbbreviateDate} from '../../utils';
 
 import styles from './style';
 
-const {width} = Dimensions.get('window'); // Get screen width
+const {width} = Dimensions.get('window');
 
 const Posts: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -53,14 +53,37 @@ const Posts: React.FC = () => {
   const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [postId, setPostId] = useState<any>(null);
+  const [postUserId, setPostUserId] = useState<any>(null);
 
-  const navigation = useNavigation<NavigationProp<AppTabsParamList>>(); // Use the type
+  const navigation = useNavigation<NavigationProp<AppTabsParamList>>();
   const refRBSheet = useRef<any>(null);
 
   // Show delete Modal
-  const handleShowDeleteModal = (id: string) => {
+  const handleShowDeleteModal = () => {
     setShowDeleteModal(true);
-    setPostId(id);
+  };
+
+  // Open bottom drawer
+  const handleOpenBottomDrawer = (post: any) => {
+    console.log('Post', post);
+    if (post) {
+      setPostId(post?._id);
+      setPostUserId(post?.user?.userId);
+    }
+
+    if (refRBSheet.current) {
+      refRBSheet.current.open();
+    }
+  };
+
+  // Handle Close bottom drawer
+  const handleCloseBottomDrawer = () => {
+    setPostId(null);
+    setPostUserId(null);
+    setShowDeleteModal(false);
+    if (refRBSheet.current) {
+      refRBSheet.current.close();
+    }
   };
 
   const handleDelete = async () => {
@@ -161,7 +184,7 @@ const Posts: React.FC = () => {
           {/* Add MoreIcon here */}
           <TouchableOpacity
             style={styles.moreIconContainer}
-            onPress={() => refRBSheet.current && refRBSheet.current.open()}>
+            onPress={() => handleOpenBottomDrawer(item)}>
             <MoreIcon width={44} height={30} />
           </TouchableOpacity>
         </View>
@@ -324,7 +347,7 @@ const Posts: React.FC = () => {
       {/* Bottom Sheet  */}
       <RBSheet
         ref={refRBSheet}
-        height={270} // Adjust the height base on items 
+        height={270} // Adjust the height base on items
         useNativeDriver={false}
         customStyles={{
           wrapper: {
@@ -341,7 +364,12 @@ const Posts: React.FC = () => {
         customAvoidingViewProps={{
           enabled: false,
         }}>
-        <BottomSheetContent />
+        <BottomSheetContent
+          posrtUserId={postUserId}
+          closeDrawer={handleCloseBottomDrawer}
+          user={user}
+          openDeleteModal={handleShowDeleteModal}
+        />
       </RBSheet>
     </>
   );

@@ -8,45 +8,63 @@ import {
   MinimizeIcon,
 } from '../../../../assets/svgs';
 
-interface BottomSheetContentProps {}
+interface BottomSheetContentProps {
+  user: any;
+  posrtUserId: string;
+  closeDrawer: () => void;
+  openDeleteModal: () => void;
+}
 
-const BottomSheetContent: React.FC<BottomSheetContentProps> = () => {
+const BottomSheetContent: React.FC<BottomSheetContentProps> = ({
+  closeDrawer,
+  user,
+  posrtUserId,
+  openDeleteModal,
+}) => {
   const handleMinimize = () => {
-    console.log('Minimize icon clicked!');
-    // Add your logic here to close the bottom sheet or perform other actions
+    closeDrawer();
   };
+
+  console.log('User ===>', user);
+  console.log('Post User Id ===>', posrtUserId);
 
   return (
     <View style={styles.container}>
       {/* Minimize Icon */}
       <TouchableOpacity onPress={handleMinimize} style={styles.minimizeButton}>
-        <MinimizeIcon height={25} width={25}  />
+        <MinimizeIcon height={25} width={25} />
       </TouchableOpacity>
 
-      {/* Delete Icon */}
-      <TouchableOpacity style={styles.button}>
-        <DeleteFilledIcons height={24} width={24} style={styles.icon} />
-        <View>
-          <Text style={styles.buttonText}>Delete</Text>
-        </View>
-      </TouchableOpacity>
+      {/* Hide edit and delete icons if user is not owner of the post  */}
+      {user?._id === posrtUserId ? (
+        <>
+          {/* Edit Icon */}
+          <TouchableOpacity style={styles.button}>
+            <SettingIcon height={24} width={24} style={styles.icon} />
+            <View>
+              <Text style={styles.buttonText}>Edit</Text>
+            </View>
+          </TouchableOpacity>
+          <View style={styles.separator} />
+          {/* Delete Icon */}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => openDeleteModal()}>
+            <DeleteFilledIcons height={24} width={24} style={styles.icon} />
+            <View>
+              <Text style={styles.buttonText}>Delete</Text>
+            </View>
+          </TouchableOpacity>
+          <View style={styles.separator} />
+        </>
+      ) : null}
 
       {/* Share Icon */}
-      <View style={styles.separator} />
       <TouchableOpacity style={styles.button}>
         <ShareIcon height={24} width={24} style={styles.icon} />
         <View>
           <Text style={styles.buttonText}>Share</Text>
           {/* <Text style={styles.subText}>Would you like to share this post?</Text> */}
-        </View>
-      </TouchableOpacity>
-
-      {/* Edit Icon */}
-      <View style={styles.separator} />
-      <TouchableOpacity style={styles.button}>
-        <SettingIcon height={24} width={24} style={styles.icon} />
-        <View>
-          <Text style={styles.buttonText}>Edit</Text>
         </View>
       </TouchableOpacity>
 
