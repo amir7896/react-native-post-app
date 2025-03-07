@@ -1,8 +1,8 @@
-export {default as LikeIcon} from './like.svg';
-export {default as CommentIcon} from './comments.svg';
+export {default as LikeIcon} from './thumb-up-line.svg';
+export {default as CommentIcon} from './chat-4-line.svg';
 export {default as AddIcon} from './add.svg';
 export {default as CancelIcon} from './cancel.svg';
-export {default as LikeFilledIcons} from './like-filled.svg';
+export {default as LikeFilledIcons} from './thumb-up-fill.svg';
 export {default as AddPostIcon} from './add-post.svg';
 export {default as UploadIcon} from './upload.svg';
 export {default as GalleryIcon} from './gallery.svg';
@@ -13,9 +13,16 @@ export {default as PauseIcon} from './pauseicon.svg';
 export {default as ProfileIcon} from './profile-avatar.svg';
 export {default as Home6Filled} from './home-6-fill.svg';
 export {default as Home6Outline} from './home-6-line.svg';
-export {default as PostFilled1} from './post-filled1.svg'
-export {default as PostOutLined1} from './post-outlined1.svg'
-export {default as User3Filled} from './user-3-fill.svg'
-export {default as User3Outline} from './user-3-line.svg'
-export {default as ArrowLeftIcon} from './arrow-left-alt.svg'
-export {default as ChevronLeftIcon } from './chevron-left-alt.svg'
+export {default as PostFilled1} from './post-filled1.svg';
+export {default as PostOutLined1} from './post-outlined1.svg';
+export {default as User3Filled} from './user-3-fill.svg';
+export {default as User3Outline} from './user-3-line.svg';
+export {default as ArrowLeftIcon} from './arrow-left-alt.svg';
+export {default as ChevronLeftIcon} from './chevron-left-alt.svg';
+export {default as MoreIcon} from './more-horizontal.svg';
+export {default as DownloadIcon} from './chat-download-fill.svg';
+export {default as ShareIcon} from './share-forward-fill.svg';
+export {default as SettingIcon} from './settings-5-fill.svg';
+export {default as DeleteFilledIcons} from './delete-bin-7-fill.svg';
+export {default as BookMarkIcon} from './bookmark-fill.svg';
+export {default as MinimizeIcon} from './minus-alt.svg';
