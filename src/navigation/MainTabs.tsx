@@ -6,6 +6,7 @@ import HomeScreen from '../screens/home/home';
 import PostScreen from '../screens/posts/post';
 import ProfileScreen from '../screens/profile/profile';
 import PostDetail from '../screens/postDetail/postDetail'; // Import PostDetail
+import PostComment from '../screens/postComment/postComment'
 
 import {
   Home6Filled,
@@ -25,6 +26,7 @@ type AppTabsParamList = {
   Post: undefined;
   Profile: undefined;
   PostDetail: { id: string}; // Define the post parameter type here
+  PostComment: {id: string}
 };
 
 export type {AppTabsParamList}; // Export the type
@@ -123,6 +125,11 @@ const MainTabs = () => (
     <Stack.Screen
       name="PostDetail"
       component={PostDetail}
+       options={{headerShown: false}}
+    />
+    <Stack.Screen
+      name="PostComment"
+      component={PostComment}
        options={{headerShown: false}}
     />
   </Stack.Navigator>

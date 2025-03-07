@@ -30,6 +30,7 @@ import {
   AddPostIcon,
   MoreIcon,
   ProfileIcon,
+  ShareIcon,
 } from '../../assets/svgs';
 import CommentModal from './components/commentModal/CommentModal';
 import CreatePostModal from './components/postModal/PostModal';
@@ -275,6 +276,14 @@ const Posts: React.FC = () => {
             onPress={() => handleShowComments(item._id)}>
             <CommentIcon width={20} height={20} fill="#4C4F56" />
             <Text style={styles.commentButtonText}>Comment</Text>
+          </TouchableOpacity>
+
+          {/* Post Comments  */}
+          <TouchableOpacity
+            style={styles.commentButton}
+            onPress={() => navigation.navigate('PostComment', {id: item?._id})}>
+            <ShareIcon width={20} height={20} fill="#4C4F56" />
+            <Text style={styles.commentButtonText}>Share</Text>
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
