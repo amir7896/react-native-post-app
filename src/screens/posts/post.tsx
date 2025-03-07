@@ -276,15 +276,6 @@ const Posts: React.FC = () => {
             <CommentIcon width={20} height={20} fill="#4C4F56" />
             <Text style={styles.commentButtonText}>Comment</Text>
           </TouchableOpacity>
-
-          {/* Currently hide delete post button */}
-          {/* {user?.userId === item.user.userId && (
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => handleShowDeleteModal(item._id)}>
-              <DeleteIcon width={20} height={20} fill="red" />
-            </TouchableOpacity>
-          )} */}
         </View>
       </TouchableOpacity>
     );
