@@ -25,9 +25,6 @@ const BottomSheetContent: React.FC<BottomSheetContentProps> = ({
     closeDrawer();
   };
 
-  console.log('User ===>', user);
-  console.log('Post User Id ===>', posrtUserId);
-
   return (
     <View style={styles.container}>
       {/* Minimize Icon */}
