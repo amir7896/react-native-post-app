@@ -1,19 +1,18 @@
 'use strict';
 
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet} from 'react-native';
 
-const {width} = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
     paddingHorizontal: 0,
-    paddingVertical: 8,
-    backgroundColor: '#f0f2f5',
+    paddingVertical: 0,
+    // backgroundColor: 'red',
   },
   card: {
     backgroundColor: 'white',
-    padding: 12,
-    marginHorizontal: 12,
+    padding: 2,
+    marginHorizontal: 2,
     marginVertical: 4,
     shadowColor: '#000',
     shadowOffset: {
@@ -158,11 +157,11 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   backButtonContainer: {
-    paddingLeft: 10,
+    paddingLeft: 1,
     paddingTop: 10,
   },
   backButton: {
-    padding: 5,
+    padding: 0
   },
   commentList: {
     marginTop: 10,
