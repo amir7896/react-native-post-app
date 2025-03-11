@@ -26,8 +26,8 @@ interface SinglePost {
   _id: string;
   title: string;
   content: string;
-  isLikedByUser: boolean,
-  likesCount: number,
+  isLikedByUser: boolean;
+  likesCount: number;
   user: {
     userId: string;
     userName: string;
@@ -103,7 +103,6 @@ export const likePost = createAsyncThunk(
   async (postId: string, thunkAPI) => {
     try {
       const response = await PostApi.likePost(postId);
-
       return {
         postId,
         likesCount: response.likesCount,
@@ -243,9 +242,15 @@ const postSlice = createSlice({
           const post = state.posts.find(
             singlePost => singlePost._id === postId,
           );
+          // Check if like triggred on all posts
           if (post) {
             post.likesCount = likesCount;
             post.isLikedByUser = isLikedByUser;
+          }
+          // Check if like trigger on single post
+          if (state.singlePost && state.singlePost._id === postId) {
+            state.singlePost.likesCount = likesCount;
+            state.singlePost.isLikedByUser = isLikedByUser;
           }
         },
       )
@@ -313,9 +318,6 @@ const postSlice = createSlice({
         state.isSuccess = true;
         state.message = 'Post created successfully';
         const {post, user} = action.payload; // Extract post and user from payload
-
-        console.log('Created post in slice:', post);
-        console.log('User in slice:', user);
 
         state.posts = [{...post, user}, ...state.posts]; // Add new post with user at the front
       })

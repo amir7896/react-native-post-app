@@ -38,12 +38,14 @@ const PostComment: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const dispatch: AppDispatch = useDispatch();
+  
 
   const {id} = route?.params as {id: string};
-  const {singlePost, isLoading, isError, comments} = useSelector(
+  const {singlePost, comments} = useSelector(
     (state: RootState) => state.post,
   );
 
+  console.log('Single Post ===', singlePost)
   useEffect(() => {
     dispatch(fetchSinglePost(id));
   }, [dispatch, id]);
@@ -57,6 +59,7 @@ const PostComment: React.FC = () => {
   };
 
   const handleLike = (postId: string) => {
+    console.log('Post ID ===',postId)
     dispatch(likePost(postId));
   };
 
@@ -64,21 +67,7 @@ const PostComment: React.FC = () => {
     ? formatAndAbbreviateDate(new Date(singlePost.createdAt))
     : '';
 
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
 
-  if (isError || !singlePost) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>Error loading post.</Text>
-      </View>
-    );
-  }
 
   return (
     <FlatList
@@ -110,17 +99,17 @@ const PostComment: React.FC = () => {
                   </View>
                   <View style={styles.userInfo}>
                     <Text style={styles.userName}>
-                      {singlePost.user.userName}
+                      {singlePost?.user.userName}
                     </Text>
                     <Text style={styles.postDate}>{displayDate}</Text>
                   </View>
                 </View>
 
                 <View style={styles.postContent}>
-                  <Text style={styles.postTitle}>{singlePost.title}</Text>
+                  <Text style={styles.postTitle}>{singlePost?.title}</Text>
                 </View>
 
-                {singlePost.media && singlePost.media.length > 0 && (
+                {singlePost?.media && singlePost?.media.length > 0 && (
                   <View style={styles.mediaGrid}>
                     {singlePost.media
                       .slice(0, 5)
@@ -201,14 +190,14 @@ const PostComment: React.FC = () => {
                 <View style={styles.likeCommentSection}>
                   <TouchableOpacity
                     style={styles.likeButton}
-                    onPress={() => handleLike(singlePost._id)}>
-                    {singlePost.isLikedByUser ? (
+                    onPress={() => singlePost?._id && handleLike(singlePost._id)}>
+                    {singlePost?.isLikedByUser ? (
                       <LikeFilledIcons width={20} height={20} />
                     ) : (
                       <LikeIcon width={20} height={20} />
                     )}
                     <Text style={styles.likeButtonText}>
-                      {singlePost.likesCount}
+                      {singlePost?.likesCount}
                     </Text>
                   </TouchableOpacity>
 
