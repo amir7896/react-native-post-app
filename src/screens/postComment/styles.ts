@@ -2,8 +2,10 @@
 
 import {StyleSheet} from 'react-native';
 
-
 export default StyleSheet.create({
+  keyboardView: {
+    flex: 1,
+  },
   container: {
     paddingHorizontal: 0,
     paddingVertical: 0,
@@ -160,7 +162,7 @@ export default StyleSheet.create({
     paddingTop: 10,
   },
   backButton: {
-    padding: 0
+    padding: 0,
   },
   commentList: {
     marginTop: 10,
@@ -191,5 +193,40 @@ export default StyleSheet.create({
   },
   commentContent: {
     flex: 1,
+  },
+  commentInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    backgroundColor: '#fff', // Ensure the background is white
+    position: 'absolute', // Position it absolutely
+    bottom: 0, // At the bottom of the screen
+    left: 0,
+    right: 0,
+  },
+  commentInput: {
+    flex: 1,
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    marginRight: 10,
+  },
+  sendButton: {
+    backgroundColor: '#007bff', // Example color, customize as needed
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+  },
+  sendButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  commentContainer: {
+    marginBottom: 35,
   },
 });
