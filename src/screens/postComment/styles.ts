@@ -7,11 +7,10 @@ export default StyleSheet.create({
   container: {
     paddingHorizontal: 0,
     paddingVertical: 0,
-    // backgroundColor: 'red',
   },
   card: {
     backgroundColor: 'white',
-    padding: 2,
+    padding: 5,
     marginHorizontal: 2,
     marginVertical: 4,
     shadowColor: '#000',
@@ -178,11 +177,7 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     marginRight: 5,
   },
-  commentSection: {
-    marginTop: 10,
-    paddingHorizontal: 12,
-    marginBottom: 20,
-  },
+
   commentProfile: {
     width: 40,
     height: 40,
